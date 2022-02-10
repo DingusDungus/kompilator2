@@ -12,6 +12,14 @@ void yy::parser::error(std::string const&err)
 
 void stBuilderRec(symbolTable &ST, Node *walker)
 {
+  if (walker->type == "expression") 
+  {
+    if (walker->value == "AndOp")
+    {
+      
+    }
+  }
+
   Node *next = walker->children.front();
   walker->children.pop_front();
   stBuilderRec(ST, next);
