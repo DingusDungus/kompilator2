@@ -11,9 +11,9 @@ public:
     symbolTable() {root = new scope(); }
     void enterScope() { current = current->nextChild(); }
     void exitScope() { current = current->Parent(); }
-    void put(std::string key, std::string item)
+    void put(std::string key, record *item)
     {
-
+        current->put(key, item);
     }
     record *lookup(std::string key)
     {

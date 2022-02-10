@@ -45,6 +45,11 @@ public:
     scope() {}
     scope(scope *parent) { this->parent = parent; }
 
+    void put(std::string key, record *item)
+    {
+        records.insert({key, item});
+    }
+
     scope *nextChild()
     {
         scope *nextChild;
