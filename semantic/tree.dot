@@ -1,223 +1,29 @@
 digraph {
 n0 [label="Goal:"];
-n1 [label="ExpressionList:"];
-n2 [label=":"];
+n1 [label="MainClass:"];
+n2 [label="Identifier:BigBoyClass"];
 n1 -> n2
-n3 [label="Identifier:Factorial"];
+n3 [label="PublicMainMethod:"];
+n4 [label="Identifier:args"];
+n3 -> n4
+n5 [label="AssignStatement:"];
+n6 [label="Identifier:cum"];
+n5 -> n6
+n7 [label="Expression:AddOP"];
+n8 [label="IntegerLiteral:5"];
+n7 -> n8
+n9 [label="Expression:Multop"];
+n10 [label="IntegerLiteral:5"];
+n9 -> n10
+n11 [label="IntegerLiteral:4"];
+n9 -> n11
+n7 -> n9
+n5 -> n7
+n3 -> n5
 n1 -> n3
-n4 [label=":"];
-n1 -> n4
-n5 [label=":"];
-n1 -> n5
-n6 [label=":"];
-n1 -> n6
-n7 [label=":"];
-n1 -> n7
-n8 [label=":"];
-n1 -> n8
-n9 [label=":"];
-n1 -> n9
-n10 [label=":"];
-n1 -> n10
-n11 [label=":"];
-n1 -> n11
-n12 [label=":"];
-n1 -> n12
-n13 [label="Identifier:a"];
-n1 -> n13
-n14 [label=":"];
-n1 -> n14
-n15 [label=":"];
-n1 -> n15
-n16 [label="Statement:"];
-n17 [label=":"];
-n16 -> n17
-n18 [label=":"];
-n16 -> n18
-n19 [label="Expression:DotOp"];
-n20 [label="Expression:newIdentifier"];
-n21 [label=":"];
-n20 -> n21
-n22 [label="Identifier:Fac"];
-n20 -> n22
-n23 [label=":"];
-n20 -> n23
-n19 -> n20
-n24 [label=":"];
-n19 -> n24
-n25 [label="Identifier:ComputeFac"];
-n19 -> n25
-n26 [label=":"];
-n19 -> n26
-n27 [label="Expressions:"];
-n28 [label="ExpressionList:"];
-n29 [label="Expression:10"];
-n28 -> n29
-n27 -> n28
-n19 -> n27
-n30 [label=":"];
-n19 -> n30
-n16 -> n19
-n31 [label=":"];
-n16 -> n31
-n32 [label=":"];
-n16 -> n32
-n1 -> n16
-n33 [label=":"];
-n1 -> n33
-n34 [label=":"];
-n1 -> n34
 n0 -> n1
-n35 [label="ClassDeclarations:"];
-n36 [label="ClassDeclarationList:"];
-n37 [label="ClassDeclaration:"];
-n38 [label=":"];
-n37 -> n38
-n39 [label="Identifier:Fac"];
-n37 -> n39
-n40 [label=":"];
-n37 -> n40
-n41 [label=":"];
-n37 -> n41
-n42 [label=":"];
-n37 -> n42
-n43 [label="MethodDeclarations:"];
-n44 [label="MethodDeclarationList:"];
-n45 [label="MethodDeclaration:"];
-n46 [label=":"];
-n45 -> n46
-n47 [label="Type:int"];
-n45 -> n47
-n48 [label="Identifier:ComputeFac"];
-n45 -> n48
-n49 [label=":"];
-n45 -> n49
-n50 [label="TypeIdentifiers:"];
-n51 [label="TypeIdentifierList:"];
-n52 [label="TypeIdentifier:"];
-n53 [label="Type:int"];
-n52 -> n53
-n54 [label="Identifier:num"];
-n52 -> n54
-n51 -> n52
-n50 -> n51
-n45 -> n50
-n55 [label=":"];
-n45 -> n55
-n56 [label=":"];
-n45 -> n56
-n57 [label="VarDeclarations:"];
-n58 [label=":"];
-n57 -> n58
-n59 [label="VarDeclaration:"];
-n60 [label="Type:int"];
-n59 -> n60
-n61 [label="Identifier:num_aux"];
-n59 -> n61
-n62 [label=":"];
-n59 -> n62
-n57 -> n59
-n45 -> n57
-n63 [label="Statements:"];
-n64 [label="StatementList:"];
-n65 [label="Statement:"];
-n66 [label=":"];
-n65 -> n66
-n67 [label=":"];
-n65 -> n67
-n68 [label="Expression:LesserOp"];
-n69 [label="expression:"];
-n70 [label="Identifier:num"];
-n69 -> n70
-n68 -> n69
-n71 [label=":"];
-n68 -> n71
-n72 [label="Expression:1"];
-n68 -> n72
-n65 -> n68
-n73 [label=":"];
-n65 -> n73
-n74 [label="Statement:"];
-n75 [label="Identifier:num_aux"];
-n74 -> n75
-n76 [label=":"];
-n74 -> n76
-n77 [label="Expression:1"];
-n74 -> n77
-n78 [label=":"];
-n74 -> n78
-n65 -> n74
-n79 [label=":"];
-n65 -> n79
-n80 [label="Statement:"];
-n81 [label="Identifier:num_aux"];
-n80 -> n81
-n82 [label=":"];
-n80 -> n82
-n83 [label="Expression:Multop"];
-n84 [label="expression:"];
-n85 [label="Identifier:num"];
-n84 -> n85
-n83 -> n84
-n86 [label=":"];
-n83 -> n86
-n87 [label="Expression:"];
-n88 [label=":"];
-n87 -> n88
-n89 [label="Expression:DotOp"];
-n90 [label="Expression:this"];
-n89 -> n90
-n91 [label=":"];
-n89 -> n91
-n92 [label="Identifier:ComputeFac"];
-n89 -> n92
-n93 [label=":"];
-n89 -> n93
-n94 [label="Expressions:"];
-n95 [label="ExpressionList:"];
-n96 [label="Expression:SubOp"];
-n97 [label="expression:"];
-n98 [label="Identifier:num"];
-n97 -> n98
-n96 -> n97
-n99 [label=":"];
-n96 -> n99
-n100 [label="Expression:1"];
-n96 -> n100
-n95 -> n96
-n94 -> n95
-n89 -> n94
-n101 [label=":"];
-n89 -> n101
-n87 -> n89
-n102 [label=":"];
-n87 -> n102
-n83 -> n87
-n80 -> n83
-n103 [label=":"];
-n80 -> n103
-n65 -> n80
-n64 -> n65
-n63 -> n64
-n45 -> n63
-n104 [label=":"];
-n45 -> n104
-n105 [label="expression:"];
-n106 [label="Identifier:num_aux"];
-n105 -> n106
-n45 -> n105
-n107 [label=":"];
-n45 -> n107
-n108 [label=":"];
-n45 -> n108
-n44 -> n45
-n43 -> n44
-n37 -> n43
-n109 [label=":"];
-n37 -> n109
-n36 -> n37
-n35 -> n36
-n0 -> n35
-n110 [label="End:"];
-n0 -> n110
+n12 [label=":"];
+n0 -> n12
+n13 [label="End:"];
+n0 -> n13
 }

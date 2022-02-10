@@ -1,22 +1,23 @@
 #include "scope.h"
+#include "Node.h"
 #include <iostream>
 #include <vector>
 
 class symbolTable
 {
 private:
+    Node *nodeRoot;
     scope *root;
     scope *current;
+    void stBuilderRec(Node *walker, Node *parent);
+    void stBuilder();
+
 public:
-    symbolTable() {root = new scope(); }
-    void enterScope() { current = current->nextChild(); }
-    void exitScope() { current = current->Parent(); }
-    void put(std::string key, record *item)
-    {
-        current->put(key, item);
-    }
-    record *lookup(std::string key)
-    {
-        return current->lookup(key);
-    }
+    symbolTable();
+    void enterScope();
+    void exitScope();
+    void init(Node *root);
+
+    void put(std::string key, record *item);
+    record *lookup(std::string key);
 };
