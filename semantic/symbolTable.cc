@@ -3,21 +3,23 @@
 void symbolTable::stBuilderRec(Node *walker, Node *parent)
     {
         auto next = walker->children.begin();
+        std::cout << walker->value << std::endl;
         while (next != walker->children.end())
         {
-            if (walker->type == "VarDeclaration")
+            if ((*next)->type == "VarDeclaration")
             {
                 variable *newRecord = new variable();
-                auto child = walker->children.begin();
+                auto child = (*next)->children.begin();
                 newRecord->type = (*child)->children.front()->value;
                 child++;
                 newRecord->id = (*child)->children.front()->value;
                 put(newRecord->id, newRecord);
+                next++;
             }
-            else if (walker->type == "MainClass")
+            else if ((*next)->type == "MainClass")
             {
                 Class *newRecord = new Class();
-                auto child = walker->children.begin();
+                auto child = (*next)->children.begin();
                 newRecord->id = (*child)->children.front()->value;
                 newRecord->type = "MainClass";
                 put(newRecord->id, newRecord);
@@ -26,10 +28,10 @@ void symbolTable::stBuilderRec(Node *walker, Node *parent)
                 next++;
                 exitScope();
             }
-            else if (walker->type == "PublicMainMethod")
+            else if ((*next)->type == "PublicMainMethod")
             {
                 method *newRecord = new method();
-                auto child = walker->children.begin();
+                auto child = (*next)->children.begin();
                 newRecord->id = "main";
                 newRecord->type = "PublicMainMethod";
                 newRecord->parameters.insert({(*child)->children.front()->value, "String"});
@@ -39,7 +41,7 @@ void symbolTable::stBuilderRec(Node *walker, Node *parent)
                 next++;
                 exitScope();
             }
-            else if (walker->type == "ClassDeclaration")
+            else if ((*next)->type == "ClassDeclaration")
             {
                 Class *newRecord = new Class();
                 auto child = walker->children.begin();
@@ -51,10 +53,10 @@ void symbolTable::stBuilderRec(Node *walker, Node *parent)
                 next++;
                 exitScope();
             }
-            else if (walker->type == "MethodDeclaration")
+            else if ((*next)->type == "MethodDeclaration")
             {
                 Class *newRecord = new Class();
-                auto child = walker->children.begin();
+                auto child = (*next)->children.begin();
                 newRecord->type = (*child)->children.front()->value;
                 child++;
                 newRecord->id = (*child)->children.front()->value;
@@ -64,19 +66,15 @@ void symbolTable::stBuilderRec(Node *walker, Node *parent)
                 next++;
                 exitScope();
             }
-            else
-            {
-                stBuilderRec((*next), walker);
-                next++;
-            }
+            stBuilderRec((*next), walker);
+            next++;
         }
     }
 
     void symbolTable::stBuilder()
     {
         Node *walker = nodeRoot;
-        Node *next = walker->children.front();
-        stBuilderRec(next, walker);
+        stBuilderRec(walker, walker);
     }
 
     symbolTable::symbolTable()

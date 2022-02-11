@@ -23,7 +23,27 @@ n3 -> n5
 n1 -> n3
 n0 -> n1
 n12 [label=":"];
+n13 [label=":"];
+n14 [label="ClassDeclaration:"];
+n15 [label="Identifier:test"];
+n14 -> n15
+n16 [label=":"];
+n14 -> n16
+n17 [label=":"];
+n18 [label=":"];
+n17 -> n18
+n19 [label="VarDeclaration:"];
+n20 [label="IntegerType:int"];
+n19 -> n20
+n21 [label="Identifier:cummers"];
+n19 -> n21
+n17 -> n19
+n14 -> n17
+n22 [label=":"];
+n14 -> n22
+n13 -> n14
+n12 -> n13
 n0 -> n12
-n13 [label="End:"];
-n0 -> n13
+n23 [label="End:"];
+n0 -> n23
 }

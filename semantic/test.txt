@@ -4,3 +4,7 @@ class BigBoyClass {
        cum = 5 + 5 * 4; 
     }
 }
+
+class test {
+    int cummers;
+}
