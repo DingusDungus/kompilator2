@@ -2,30 +2,29 @@
 
 void symbolTable::stBuilderRec(Node *walker, Node *parent)
     {
-        auto next = walker->children.begin();
-        std::cout << walker->value << std::endl;
-        while (next != walker->children.end())
+        for (auto next = walker->children.begin();next != walker->children.end();next++)
         {
             if ((*next)->type == "VarDeclaration")
             {
                 variable *newRecord = new variable();
                 auto child = (*next)->children.begin();
-                newRecord->type = (*child)->children.front()->value;
+                newRecord->type = (*child)->value;
                 child++;
-                newRecord->id = (*child)->children.front()->value;
+                newRecord->id = (*child)->value;
                 put(newRecord->id, newRecord);
-                next++;
+                std::cout << "Record: type: " << newRecord->type << " id: " << newRecord->id << std::endl;
+
             }
             else if ((*next)->type == "MainClass")
             {
                 Class *newRecord = new Class();
                 auto child = (*next)->children.begin();
-                newRecord->id = (*child)->children.front()->value;
+                newRecord->id = (*child)->value;
                 newRecord->type = "MainClass";
                 put(newRecord->id, newRecord);
+                std::cout << "Record: type: " << newRecord->type << " id: " << newRecord->id << std::endl;
                 enterScope();
                 stBuilderRec((*next), walker);
-                next++;
                 exitScope();
             }
             else if ((*next)->type == "PublicMainMethod")
@@ -34,11 +33,11 @@ void symbolTable::stBuilderRec(Node *walker, Node *parent)
                 auto child = (*next)->children.begin();
                 newRecord->id = "main";
                 newRecord->type = "PublicMainMethod";
-                newRecord->parameters.insert({(*child)->children.front()->value, "String"});
+                newRecord->parameters.insert({(*child)->value, "String"});
                 put(newRecord->id, newRecord);
+                std::cout << "Record: type: " << newRecord->type << " id: " << newRecord->id << std::endl;
                 enterScope();
                 stBuilderRec((*next), walker);
-                next++;
                 exitScope();
             }
             else if ((*next)->type == "ClassDeclaration")
@@ -48,26 +47,29 @@ void symbolTable::stBuilderRec(Node *walker, Node *parent)
                 newRecord->id = (*child)->children.front()->value;
                 newRecord->type = "Class";
                 put(newRecord->id, newRecord);
+                std::cout << "Record: type: " << newRecord->type << " id: " << newRecord->id << std::endl;
                 enterScope();
                 stBuilderRec((*next), walker);
-                next++;
                 exitScope();
             }
             else if ((*next)->type == "MethodDeclaration")
             {
                 Class *newRecord = new Class();
                 auto child = (*next)->children.begin();
-                newRecord->type = (*child)->children.front()->value;
+                newRecord->type = (*child)->value;
                 child++;
-                newRecord->id = (*child)->children.front()->value;
+                newRecord->id = (*child)->value;
                 put(newRecord->id, newRecord);
+                std::cout << "Record: type: " << newRecord->type << " id: " << newRecord->id << std::endl;
                 enterScope();
                 stBuilderRec((*next), walker);
-                next++;
                 exitScope();
             }
-            stBuilderRec((*next), walker);
-            next++;
+            else 
+            {
+                stBuilderRec((*next), walker);
+            }
+
         }
     }
 
@@ -100,4 +102,16 @@ void symbolTable::stBuilderRec(Node *walker, Node *parent)
     record *symbolTable::lookup(std::string key)
     {
         return current->lookup(key);
+    }
+
+    void symbolTable::printSTtree()
+    {
+        current = root;
+        for (auto i = current->records.begin();i != current->records.end();i++)
+        {
+            std::cout << "Record: type: " << i->second->type << " id: " << i->second->id << std::endl;
+        }
+        std::cout << std::endl;
+
+
     }

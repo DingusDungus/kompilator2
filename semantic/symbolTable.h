@@ -17,6 +17,8 @@ public:
     void enterScope();
     void exitScope();
     void init(Node *root);
+    void printSTtree();
+    void printSTtreeRec(scope *walker, int spaces);
 
     void put(std::string key, record *item);
     record *lookup(std::string key);

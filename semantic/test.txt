@@ -7,4 +7,11 @@ class BigBoyClass {
 
 class test {
     int cummers;
+    int cummer;
+    public boolean SetHas_Left(boolean val){
+	 return true ;
+    }
+    public boolean SetHas_Left(boolean val){
+	 return true ;
+    }
 }

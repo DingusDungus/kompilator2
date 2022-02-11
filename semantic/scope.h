@@ -39,12 +39,12 @@ private:
     int next = 0;
     scope *parent;
     std::vector<scope *> children;
-    std::map<std::string, record *> records;
 
 public:
     scope() {}
     scope(scope *parent) { this->parent = parent; }
 
+    std::map<std::string, record *> records;
     void put(std::string key, record *item)
     {
         records.insert({key, item});
