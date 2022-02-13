@@ -7,7 +7,7 @@ class BigBoyClass {
 
 class test {
     int cummers;
-    int cummer;
+    int cummers;
     public boolean SetHas_Left(boolean val){
 	 return true ;
     }

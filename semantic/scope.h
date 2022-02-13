@@ -1,3 +1,7 @@
+
+#ifndef SCOPE_HPP
+#define SCOPE_HPP
+
 #include <iostream>
 #include <vector>
 #include <map>
@@ -37,14 +41,18 @@ class scope
 {
 private:
     int next = 0;
-    scope *parent;
-    std::vector<scope *> children;
 
 public:
+    scope *parent;
+    std::vector<scope *> children;
+    record *scopeRecord;
+    std::map<std::string, int> declarationCount;
+    std::map<std::string, record *> records;
+
+
     scope() {}
     scope(scope *parent) { this->parent = parent; }
 
-    std::map<std::string, record *> records;
     void put(std::string key, record *item)
     {
         records.insert({key, item});
@@ -88,6 +96,20 @@ public:
         }
     }
 
+    void printRecords()
+    {
+        std::cout << std::endl;
+        for (auto i = records.begin();i != records.end();i++)
+        {
+            std::cout << "Record: type: " << i->second->type << " id: " << i->second->id << std::endl;
+        }
+        std::cout << std::endl;
+        for (int i = 0; i < children.size();i++)
+        {
+            children[i]->printRecords();
+        }
+    }
+
     void resetScope()
     {
         next = 0;
@@ -97,3 +119,5 @@ public:
         }
     }
 };
+
+#endif

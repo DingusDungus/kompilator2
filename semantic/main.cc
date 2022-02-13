@@ -1,6 +1,7 @@
 #include <iostream>
 #include "parser.tab.hh"
 #include "symbolTable.h"
+#include "semanticAnalyser.h"
 
 extern Node *root;
 extern FILE *yyin;
@@ -31,6 +32,12 @@ int main(int argc, char **argv)
     root->generate_tree();
   }
   ST.init(root);
+  ST.printSTtree();
+  semanticAnalyser SA(ST, root);
+  if (SA.analyse() == -1)
+  {
+    std::cout << "Duplicate found!!\n";
+  }
 
   return 0;
 }

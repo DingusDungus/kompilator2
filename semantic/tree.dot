@@ -43,7 +43,7 @@ n17 -> n18
 n23 [label="VarDeclaration:"];
 n24 [label="IntegerType:int"];
 n23 -> n24
-n25 [label="Identifier:cummer"];
+n25 [label="Identifier:cummers"];
 n23 -> n25
 n17 -> n23
 n14 -> n17
