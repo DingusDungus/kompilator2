@@ -37,6 +37,7 @@ int main(int argc, char **argv)
   if (SA.analyse() == -1)
   {
     std::cout << "Duplicate found!!\n";
+    return 1;
   }
 
   return 0;

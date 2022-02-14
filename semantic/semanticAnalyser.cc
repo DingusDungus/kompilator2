@@ -10,7 +10,6 @@ bool semanticAnalyser::analyse()
 {
    if (ST.duplicatesFound())
    {
-       ST.listDuplicates();
        return false;
    }
    return true;

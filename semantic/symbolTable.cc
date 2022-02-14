@@ -8,13 +8,21 @@ void symbolTable::stBuilderRec(Node *walker, Node *parent)
         {
             variable *newRecord = new variable();
             auto child = (*next)->children.begin();
-            newRecord->type = (*child)->value;
+            if ((*child)->type != "identifierType")
+            {
+                newRecord->type = (*child)->type;
+            }
+            else
+            {
+                auto temp = (*child)->children.begin();
+                newRecord->type = (*temp)->value;
+            }
             child++;
             newRecord->id = (*child)->value;
             put(newRecord->id, newRecord);
             declared(newRecord->id);
 
-            //std::cout << "Record: type: " << newRecord->type << " id: " << newRecord->id << std::endl;
+            // std::cout << "Record: type: " << newRecord->type << " id: " << newRecord->id << std::endl;
         }
         else if ((*next)->type == "MainClass")
         {
@@ -23,7 +31,7 @@ void symbolTable::stBuilderRec(Node *walker, Node *parent)
             newRecord->id = (*child)->value;
             newRecord->type = "MainClass";
             put(newRecord->id, newRecord);
-            //std::cout << "Record: type: " << newRecord->type << " id: " << newRecord->id << std::endl;
+            // std::cout << "Record: type: " << newRecord->type << " id: " << newRecord->id << std::endl;
             declared(newRecord->id);
             enterScope();
             current->scopeRecord = newRecord;
@@ -38,7 +46,7 @@ void symbolTable::stBuilderRec(Node *walker, Node *parent)
             newRecord->type = "PublicMainMethod";
             newRecord->parameters.insert({(*child)->value, "String"});
             put(newRecord->id, newRecord);
-            //std::cout << "Record: type: " << newRecord->type << " id: " << newRecord->id << std::endl;
+            // std::cout << "Record: type: " << newRecord->type << " id: " << newRecord->id << std::endl;
             declared(newRecord->id);
             enterScope();
             current->scopeRecord = newRecord;
@@ -52,7 +60,7 @@ void symbolTable::stBuilderRec(Node *walker, Node *parent)
             newRecord->id = (*child)->children.front()->value;
             newRecord->type = "Class";
             put(newRecord->id, newRecord);
-            //std::cout << "Record: type: " << newRecord->type << " id: " << newRecord->id << std::endl;
+            // std::cout << "Record: type: " << newRecord->type << " id: " << newRecord->id << std::endl;
             declared(newRecord->id);
             enterScope();
             current->scopeRecord = newRecord;
@@ -67,7 +75,7 @@ void symbolTable::stBuilderRec(Node *walker, Node *parent)
             child++;
             newRecord->id = (*child)->value;
             put(newRecord->id, newRecord);
-            //std::cout << "Record: type: " << newRecord->type << " id: " << newRecord->id << std::endl;
+            // std::cout << "Record: type: " << newRecord->type << " id: " << newRecord->id << std::endl;
             declared(newRecord->id);
             enterScope();
             current->scopeRecord = newRecord;
@@ -149,12 +157,10 @@ void symbolTable::declared(std::string key)
 {
     if (current->declarationCount.count(key) == 0)
     {
-        std::cout << "Inserted\n";
         current->declarationCount.insert({key, 1});
     }
     else
     {
-        std::cout << "Duplicate found\n";
         auto var = current->declarationCount.find(key);
         current->declarationCount[var->first] = 2;
     }
@@ -196,12 +202,85 @@ bool symbolTable::duplicatesFoundRec(scope *ptr)
     }
     return returnBool;
 }
-void symbolTable::listDuplicates()
+
+bool symbolTable::expressionCheck()
 {
-    
+    current = root;
+    Node *nodePtr = nodeRoot;
+    expressionCheckRec(nodePtr);
 }
 
-void symbolTable::listDuplicatesRec(scope *ptr)
+bool symbolTable::expressionCheckRec(Node *nodePtr)
 {
-    
+    for (auto next = nodePtr->children.begin(); next != nodePtr->children.end(); next++)
+    {
+        if ((*next)->type == "Expression")
+        {  
+            expressionCheckRecNode((*next));
+            std::string type = expressionElements[0];
+            for (int i = 0;i < expressionElements.size();i++)
+            {
+                if (type != expressionElements[i])
+                {
+                    return true;
+                }
+            }
+            expressionElements.clear();
+        }
+        else if ((*next)->type == "MainClass")
+        {
+            enterScope();
+            expressionCheckRec((*next)); 
+            exitScope();
+        }
+        else if ((*next)->type == "PublicMainMethod")
+        {
+            enterScope();
+            expressionCheckRec((*next)); 
+            exitScope();
+        }
+        else if ((*next)->type == "ClassDeclaration")
+        {
+            enterScope();
+            expressionCheckRec((*next)); 
+            exitScope();
+        }
+        else if ((*next)->type == "MethodDeclaration")
+        {
+            
+            enterScope();
+            expressionCheckRec((*next)); 
+            exitScope();
+        }
+        else
+        {
+           expressionCheckRec((*next)); 
+        }
+    }
+    return false;
+}
+
+bool symbolTable::expressionCheckRecNode(Node *nodePtr)
+{
+    if (nodePtr->type == "Identifier")
+    {
+        auto identifier = nodePtr->children.begin();
+        expressionElements.push_back((*identifier)->type);
+    }
+    else if (nodePtr->type == "IntegerLiteral")
+    {
+        expressionElements.push_back("int");
+    }
+    for (auto i = nodePtr->children.begin();i != nodePtr->children.end();i++)
+    {
+        expressionCheckRecNode((*i));
+    }
+}
+
+bool symbolTable::typeCheck()
+{
+}
+
+bool symbolTable::typeCheckRec(scope *ptr)
+{
 }

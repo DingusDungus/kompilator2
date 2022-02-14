@@ -20,9 +20,15 @@ private:
     Node *nodeRoot;
     scope *root;
     scope *current;
+    std::vector<std::string> expressionElements;
     void stBuilderRec(Node *walker, Node *parent);
     void stBuilder();
     void declared(std::string key);
+    bool expressionCheck();
+    bool expressionCheckRec(Node *nodePtr);
+    bool expressionCheckRecNode(Node *nodePtr);
+    bool typeCheck();
+    bool typeCheckRec(scope *ptr);
 
 public:
     symbolTable();
@@ -36,8 +42,6 @@ public:
     int size();
     bool duplicatesFound();
     bool duplicatesFoundRec(scope *ptr);
-    void listDuplicates();
-    void listDuplicatesRec(scope *ptr);
 
     void put(std::string key, record *item);
     record *lookup(std::string key);
