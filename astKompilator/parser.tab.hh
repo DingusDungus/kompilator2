@@ -426,10 +426,10 @@ namespace yy {
       // SEMI_C
       // NOT
       // AND
+      // OR
       // LESSER
       // EQUAL
       // GREATER
-      // OR
       // PLUSOP
       // MINUS
       // MULTOP
@@ -512,10 +512,10 @@ namespace yy {
     SEMI_C = 286,                  // SEMI_C
     NOT = 287,                     // NOT
     AND = 288,                     // AND
-    LESSER = 289,                  // LESSER
-    EQUAL = 290,                   // EQUAL
-    GREATER = 291,                 // GREATER
-    OR = 292,                      // OR
+    OR = 289,                      // OR
+    LESSER = 290,                  // LESSER
+    EQUAL = 291,                   // EQUAL
+    GREATER = 292,                 // GREATER
     PLUSOP = 293,                  // PLUSOP
     MINUS = 294,                   // MINUS
     MULTOP = 295,                  // MULTOP
@@ -576,10 +576,10 @@ namespace yy {
         S_SEMI_C = 31,                           // SEMI_C
         S_NOT = 32,                              // NOT
         S_AND = 33,                              // AND
-        S_LESSER = 34,                           // LESSER
-        S_EQUAL = 35,                            // EQUAL
-        S_GREATER = 36,                          // GREATER
-        S_OR = 37,                               // OR
+        S_OR = 34,                               // OR
+        S_LESSER = 35,                           // LESSER
+        S_EQUAL = 36,                            // EQUAL
+        S_GREATER = 37,                          // GREATER
         S_PLUSOP = 38,                           // PLUSOP
         S_MINUS = 39,                            // MINUS
         S_MULTOP = 40,                           // MULTOP
@@ -703,10 +703,10 @@ namespace yy {
       case symbol_kind::S_SEMI_C: // SEMI_C
       case symbol_kind::S_NOT: // NOT
       case symbol_kind::S_AND: // AND
+      case symbol_kind::S_OR: // OR
       case symbol_kind::S_LESSER: // LESSER
       case symbol_kind::S_EQUAL: // EQUAL
       case symbol_kind::S_GREATER: // GREATER
-      case symbol_kind::S_OR: // OR
       case symbol_kind::S_PLUSOP: // PLUSOP
       case symbol_kind::S_MINUS: // MINUS
       case symbol_kind::S_MULTOP: // MULTOP
@@ -842,10 +842,10 @@ switch (yykind)
       case symbol_kind::S_SEMI_C: // SEMI_C
       case symbol_kind::S_NOT: // NOT
       case symbol_kind::S_AND: // AND
+      case symbol_kind::S_OR: // OR
       case symbol_kind::S_LESSER: // LESSER
       case symbol_kind::S_EQUAL: // EQUAL
       case symbol_kind::S_GREATER: // GREATER
-      case symbol_kind::S_OR: // OR
       case symbol_kind::S_PLUSOP: // PLUSOP
       case symbol_kind::S_MINUS: // MINUS
       case symbol_kind::S_MULTOP: // MULTOP
@@ -1516,6 +1516,21 @@ switch (yykind)
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
+      make_OR (std::string v)
+      {
+        return symbol_type (token::OR, std::move (v));
+      }
+#else
+      static
+      symbol_type
+      make_OR (const std::string& v)
+      {
+        return symbol_type (token::OR, v);
+      }
+#endif
+#if 201103L <= YY_CPLUSPLUS
+      static
+      symbol_type
       make_LESSER (std::string v)
       {
         return symbol_type (token::LESSER, std::move (v));
@@ -1556,21 +1571,6 @@ switch (yykind)
       make_GREATER (const std::string& v)
       {
         return symbol_type (token::GREATER, v);
-      }
-#endif
-#if 201103L <= YY_CPLUSPLUS
-      static
-      symbol_type
-      make_OR (std::string v)
-      {
-        return symbol_type (token::OR, std::move (v));
-      }
-#else
-      static
-      symbol_type
-      make_OR (const std::string& v)
-      {
-        return symbol_type (token::OR, v);
       }
 #endif
 #if 201103L <= YY_CPLUSPLUS
@@ -2148,10 +2148,10 @@ switch (yykind)
       case symbol_kind::S_SEMI_C: // SEMI_C
       case symbol_kind::S_NOT: // NOT
       case symbol_kind::S_AND: // AND
+      case symbol_kind::S_OR: // OR
       case symbol_kind::S_LESSER: // LESSER
       case symbol_kind::S_EQUAL: // EQUAL
       case symbol_kind::S_GREATER: // GREATER
-      case symbol_kind::S_OR: // OR
       case symbol_kind::S_PLUSOP: // PLUSOP
       case symbol_kind::S_MINUS: // MINUS
       case symbol_kind::S_MULTOP: // MULTOP
@@ -2249,10 +2249,10 @@ switch (yykind)
       case symbol_kind::S_SEMI_C: // SEMI_C
       case symbol_kind::S_NOT: // NOT
       case symbol_kind::S_AND: // AND
+      case symbol_kind::S_OR: // OR
       case symbol_kind::S_LESSER: // LESSER
       case symbol_kind::S_EQUAL: // EQUAL
       case symbol_kind::S_GREATER: // GREATER
-      case symbol_kind::S_OR: // OR
       case symbol_kind::S_PLUSOP: // PLUSOP
       case symbol_kind::S_MINUS: // MINUS
       case symbol_kind::S_MULTOP: // MULTOP
