@@ -26,13 +26,12 @@ private:
     void declared(std::string key);
     bool expressionCheck();
     bool expressionCheckRec(Node *nodePtr);
-    bool expressionCheckRecNode(Node *nodePtr);
-    bool typeCheck();
-    bool typeCheckRec(scope *ptr);
+    void expressionCheckRecNode(Node *nodePtr);
 
 public:
     symbolTable();
     void enterScope();
+    bool typeCheck();
     void exitScope();
     void init(Node *root);
     void printSTtree();

@@ -1,14 +1,15 @@
 class BigBoyClass {
     public static void main(String[] args) 
     {
-       cum = 5 + 5 * 4; 
+       cum = 5 + 5 * 4;
     }
 }
 
 class test {
     int cummers;
-    int cummers;
+    boolean cum;
     public boolean SetHas_Left(boolean val){
+        cummers = cummers + cum + 5;
 	 return true ;
     }
     public boolean SetHas_Left(boolean val){

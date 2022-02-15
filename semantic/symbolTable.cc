@@ -10,7 +10,7 @@ void symbolTable::stBuilderRec(Node *walker, Node *parent)
             auto child = (*next)->children.begin();
             if ((*child)->type != "identifierType")
             {
-                newRecord->type = (*child)->type;
+                newRecord->type = (*child)->value;
             }
             else
             {
@@ -207,7 +207,8 @@ bool symbolTable::expressionCheck()
 {
     current = root;
     Node *nodePtr = nodeRoot;
-    expressionCheckRec(nodePtr);
+    resetScopes();
+    return expressionCheckRec(nodePtr);
 }
 
 bool symbolTable::expressionCheckRec(Node *nodePtr)
@@ -215,63 +216,71 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
     for (auto next = nodePtr->children.begin(); next != nodePtr->children.end(); next++)
     {
         if ((*next)->type == "Expression")
-        {  
+        {
             expressionCheckRecNode((*next));
-            std::string type = expressionElements[0];
-            for (int i = 0;i < expressionElements.size();i++)
+            if (expressionElements.size() > 0)
             {
-                if (type != expressionElements[i])
+                std::string type = expressionElements[0];
+                for (int i = 0; i < expressionElements.size(); i++)
                 {
-                    return true;
+                    if (type != expressionElements[i])
+                    {
+                        std::cout << "Error: Expression in " << current->scopeRecord->type << " " << current->scopeRecord->id << " consists of differing types\n";
+                        return true;
+                    }
                 }
+                expressionElements.clear();
+                return false;
             }
-            expressionElements.clear();
         }
         else if ((*next)->type == "MainClass")
         {
             enterScope();
-            expressionCheckRec((*next)); 
+            expressionCheckRec((*next));
             exitScope();
         }
         else if ((*next)->type == "PublicMainMethod")
         {
             enterScope();
-            expressionCheckRec((*next)); 
+            expressionCheckRec((*next));
             exitScope();
         }
         else if ((*next)->type == "ClassDeclaration")
         {
             enterScope();
-            expressionCheckRec((*next)); 
+            expressionCheckRec((*next));
             exitScope();
         }
         else if ((*next)->type == "MethodDeclaration")
         {
-            
+
             enterScope();
-            expressionCheckRec((*next)); 
+            expressionCheckRec((*next));
             exitScope();
         }
         else
         {
-           expressionCheckRec((*next)); 
+            expressionCheckRec((*next));
         }
     }
-    return false;
 }
 
-bool symbolTable::expressionCheckRecNode(Node *nodePtr)
+void symbolTable::expressionCheckRecNode(Node *nodePtr)
 {
     if (nodePtr->type == "Identifier")
     {
-        auto identifier = nodePtr->children.begin();
-        expressionElements.push_back((*identifier)->type);
+        record *identifierVal = lookup(nodePtr->value);
+        expressionElements.push_back(identifierVal->type);
     }
     else if (nodePtr->type == "IntegerLiteral")
     {
         expressionElements.push_back("int");
     }
-    for (auto i = nodePtr->children.begin();i != nodePtr->children.end();i++)
+    else if (nodePtr->type == "BooleanExpression")
+    {
+        expressionElements.push_back("boolean");
+    }
+    for (auto i = nodePtr->children.begin(); i != nodePtr->children.end(); i++)
     {
         expressionCheckRecNode((*i));
     }
@@ -279,8 +288,5 @@ bool symbolTable::expressionCheckRecNode(Node *nodePtr)
 
 bool symbolTable::typeCheck()
 {
-}
-
-bool symbolTable::typeCheckRec(scope *ptr)
-{
+    return expressionCheck();
 }

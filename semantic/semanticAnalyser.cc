@@ -12,5 +12,9 @@ bool semanticAnalyser::analyse()
    {
        return false;
    }
+   else if (ST.typeCheck())
+   {
+       return false;
+   }
    return true;
 }
