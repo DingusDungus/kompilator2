@@ -1,4 +1,3 @@
-
 #ifndef SCOPE_HPP
 #define SCOPE_HPP
 
@@ -66,7 +65,7 @@ public:
             nextChild = new scope(this);
             children.push_back(nextChild);
         }
-        else 
+        else
         {
             nextChild = children[next];
         }
@@ -80,6 +79,7 @@ public:
     {
         if (records.count(key) == 1)
         {
+            std::cout << "Lookup, key found!" << std::endl;
             record *record = records.find(key)->second;
             return record;
         }

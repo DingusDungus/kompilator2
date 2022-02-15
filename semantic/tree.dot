@@ -1,25 +1,13 @@
 digraph {
 n0 [label="Goal:"];
 n1 [label="MainClass:"];
-n2 [label="Identifier:Factorial"];
+n2 [label="Identifier:BigBoyClass"];
 n1 -> n2
 n3 [label="PublicMainMethod:"];
 n4 [label="Identifier:args"];
 n3 -> n4
-n5 [label="SystemOutPrintStatement:"];
-n6 [label="Expression:methodCall"];
-n7 [label="Expression:newIdentifier"];
-n8 [label="Identifier:Fac"];
-n7 -> n8
-n6 -> n7
-n9 [label="Identifier:ComputeFac"];
-n6 -> n9
-n10 [label="Expressions:"];
-n11 [label="ExpressionList:"];
-n12 [label="IntegerLiteral:10"];
-n11 -> n12
-n10 -> n11
-n6 -> n10
+n5 [label="AssignStatement:"];
+n6 [label="Identifier:cum"];
 n5 -> n6
 n7 [label="Expression:AddOP"];
 n8 [label="IntegerLiteral:5"];
@@ -34,104 +22,152 @@ n5 -> n7
 n3 -> n5
 n1 -> n3
 n0 -> n1
-n13 [label="ClassDeclarations:"];
-n14 [label="ClassDeclarationList:"];
-n15 [label="ClassDeclaration:"];
-n16 [label="Identifier:Fac"];
-n15 -> n16
-n17 [label="ExtendsIdentifier:"];
-n15 -> n17
+n12 [label="ClassDeclarations:"];
+n13 [label="ClassDeclarationList:"];
+n14 [label="ClassDeclaration:"];
+n15 [label="Identifier:test"];
+n14 -> n15
+n16 [label="ExtendsIdentifier:"];
+n14 -> n16
+n17 [label="varDeclarations:"];
 n18 [label="varDeclarations:"];
-n15 -> n18
-n19 [label="MethodDeclarations:"];
-n20 [label="MethodDeclarationList:"];
-n21 [label="MethodDeclaration:"];
+n19 [label="varDeclarations:"];
+n20 [label="varDeclarations:"];
+n19 -> n20
+n21 [label="VarDeclaration:"];
 n22 [label="IntegerType:int"];
 n21 -> n22
-n23 [label="Identifier:ComputeFac"];
+n23 [label="Identifier:cummers"];
 n21 -> n23
-n24 [label="TypeIdentifiers:"];
-n25 [label="TypeIdentifierList:"];
-n26 [label="TypeIdentifier:"];
-n27 [label="IntegerType:int"];
-n26 -> n27
-n28 [label="Identifier:num"];
-n26 -> n28
-n25 -> n26
+n19 -> n21
+n18 -> n19
+n24 [label="VarDeclaration:"];
+n25 [label="BooleanType:boolean"];
 n24 -> n25
-n21 -> n24
-n29 [label="varDeclarations:"];
-n30 [label="varDeclarations:"];
-n29 -> n30
-n31 [label="VarDeclaration:"];
-n32 [label="IntegerType:int"];
-n31 -> n32
-n33 [label="Identifier:num_aux"];
-n31 -> n33
-n29 -> n31
-n21 -> n29
-n34 [label="Statements:"];
-n35 [label="StatementList:"];
-n36 [label="IF_ElseStatement:"];
-n37 [label="Expression:LesserOP"];
-n38 [label="IdentifierExpression:"];
-n39 [label="Identifier:num"];
-n38 -> n39
-n37 -> n38
-n40 [label="IntegerLiteral:1"];
-n37 -> n40
-n36 -> n37
-n41 [label="AssignStatement:"];
-n42 [label="Identifier:num_aux"];
-n41 -> n42
-n43 [label="IntegerLiteral:1"];
-n41 -> n43
-n36 -> n41
-n44 [label="AssignStatement:"];
-n45 [label="Identifier:num_aux"];
-n44 -> n45
-n46 [label="Expression:Multop"];
-n47 [label="IdentifierExpression:"];
-n48 [label="Identifier:num"];
-n47 -> n48
-n46 -> n47
-n49 [label="Expression:"];
-n50 [label="Expression:methodCall"];
-n51 [label="ThisExpression:this"];
-n50 -> n51
-n52 [label="Identifier:ComputeFac"];
-n50 -> n52
-n53 [label="Expressions:"];
-n54 [label="ExpressionList:"];
-n55 [label="Expression:SubOP"];
-n56 [label="IdentifierExpression:"];
-n57 [label="Identifier:num"];
-n56 -> n57
-n55 -> n56
-n58 [label="IntegerLiteral:1"];
-n55 -> n58
-n54 -> n55
-n53 -> n54
-n50 -> n53
-n49 -> n50
-n46 -> n49
-n44 -> n46
-n36 -> n44
-n35 -> n36
+n26 [label="Identifier:cum"];
+n24 -> n26
+n18 -> n24
+n17 -> n18
+n27 [label="VarDeclaration:"];
+n28 [label="IntegerType:int"];
+n27 -> n28
+n29 [label="Identifier:pepe"];
+n27 -> n29
+n17 -> n27
+n14 -> n17
+n30 [label="MethodDeclarations:"];
+n31 [label="MethodDeclarationList:"];
+n32 [label="MethodDeclarationList:"];
+n33 [label="MethodDeclarationList:"];
+n34 [label="MethodDeclaration:"];
+n35 [label="IntegerType:int"];
 n34 -> n35
-n21 -> n34
-n59 [label="return:"];
-n60 [label="IdentifierExpression:"];
-n61 [label="Identifier:num_aux"];
+n36 [label="Identifier:Meth"];
+n34 -> n36
+n37 [label="TypeIdentifiers:"];
+n38 [label="TypeIdentifierList:"];
+n39 [label="TypeIdentifierList:"];
+n40 [label="TypeIdentifier:"];
+n41 [label="IntegerType:int"];
+n40 -> n41
+n42 [label="Identifier:a"];
+n40 -> n42
+n39 -> n40
+n38 -> n39
+n43 [label="TypeIdentifier:"];
+n44 [label="BooleanType:boolean"];
+n43 -> n44
+n45 [label="Identifier:b"];
+n43 -> n45
+n38 -> n43
+n37 -> n38
+n34 -> n37
+n46 [label="varDeclarations:"];
+n34 -> n46
+n47 [label="Statements:"];
+n34 -> n47
+n48 [label="return:"];
+n49 [label="IdentifierExpression:"];
+n50 [label="Identifier:pepe"];
+n49 -> n50
+n48 -> n49
+n34 -> n48
+n33 -> n34
+n32 -> n33
+n51 [label="MethodDeclaration:"];
+n52 [label="BooleanType:boolean"];
+n51 -> n52
+n53 [label="Identifier:SetHas_Left"];
+n51 -> n53
+n54 [label="TypeIdentifiers:"];
+n55 [label="TypeIdentifierList:"];
+n56 [label="TypeIdentifier:"];
+n57 [label="BooleanType:boolean"];
+n56 -> n57
+n58 [label="Identifier:val"];
+n56 -> n58
+n55 -> n56
+n54 -> n55
+n51 -> n54
+n59 [label="varDeclarations:"];
+n51 -> n59
+n60 [label="Statements:"];
+n61 [label="StatementList:"];
+n62 [label="AssignStatement:"];
+n63 [label="Identifier:cummers"];
+n62 -> n63
+n64 [label="Expression:AddOP"];
+n65 [label="Expression:AddOP"];
+n66 [label="IdentifierExpression:"];
+n67 [label="Identifier:cummers"];
+n66 -> n67
+n65 -> n66
+n68 [label="IdentifierExpression:"];
+n69 [label="Identifier:cum"];
+n68 -> n69
+n65 -> n68
+n64 -> n65
+n70 [label="IntegerLiteral:5"];
+n64 -> n70
+n62 -> n64
+n61 -> n62
 n60 -> n61
-n59 -> n60
-n21 -> n59
-n20 -> n21
-n19 -> n20
-n15 -> n19
-n14 -> n15
+n51 -> n60
+n71 [label="return:"];
+n72 [label="BooleanExpression:true"];
+n71 -> n72
+n51 -> n71
+n32 -> n51
+n31 -> n32
+n73 [label="MethodDeclaration:"];
+n74 [label="BooleanType:boolean"];
+n73 -> n74
+n75 [label="Identifier:SetHas_Left"];
+n73 -> n75
+n76 [label="TypeIdentifiers:"];
+n77 [label="TypeIdentifierList:"];
+n78 [label="TypeIdentifier:"];
+n79 [label="BooleanType:boolean"];
+n78 -> n79
+n80 [label="Identifier:val"];
+n78 -> n80
+n77 -> n78
+n76 -> n77
+n73 -> n76
+n81 [label="varDeclarations:"];
+n73 -> n81
+n82 [label="Statements:"];
+n73 -> n82
+n83 [label="return:"];
+n84 [label="BooleanExpression:true"];
+n83 -> n84
+n73 -> n83
+n31 -> n73
+n30 -> n31
+n14 -> n30
 n13 -> n14
-n0 -> n13
-n62 [label="End:"];
-n0 -> n62
+n12 -> n13
+n0 -> n12
+n85 [label="End:"];
+n0 -> n85
 }

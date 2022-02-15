@@ -1,4 +1,6 @@
 #include "symbolTable.h"
+#include "scope.h"
+#include <string>
 
 void symbolTable::stBuilderRec(Node *walker, Node *parent)
 {
@@ -69,7 +71,7 @@ void symbolTable::stBuilderRec(Node *walker, Node *parent)
         }
         else if ((*next)->type == "MethodDeclaration")
         {
-            Class *newRecord = new Class();
+            method *newRecord = new method();
             auto child = (*next)->children.begin();
             newRecord->type = (*child)->value;
             child++;
@@ -225,7 +227,11 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
                 {
                     if (type != expressionElements[i])
                     {
-                        std::cout << "Error: Expression in " << current->scopeRecord->type << " " << current->scopeRecord->id << " consists of differing types\n";
+                        std::cout << "Error: Expression in "
+                            << current->scopeRecord->type
+                            << " "
+                            << current->scopeRecord->id
+                            << " consists of differing types\n";
                         return true;
                     }
                 }
@@ -253,8 +259,25 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
         }
         else if ((*next)->type == "MethodDeclaration")
         {
-
             enterScope();
+            auto child = (*next)->children.begin();
+            auto endChild = (*next)->children.end();
+            endChild--;
+            while ((*endChild)->children.empty() == false){
+                endChild = (*endChild)->children.begin();
+            }
+            std::string returnType = (*endChild)->value;
+            std::string targetType = (*child)->value;
+            child++;
+            std::string methodName = (*child)->value;
+            method* targetMethod = (method*)lookup(methodName);
+            record* targetReturn = lookup(returnType);
+            std::cout << "methodType: " << targetType
+                << " methodName: " << methodName
+                << " targetMethodType: " << targetMethod->type
+                << " returnIdentifier: " << returnType
+                << " returnType: " << targetReturn->type
+                << std::endl;
             expressionCheckRec((*next));
             exitScope();
         }

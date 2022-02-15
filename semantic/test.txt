@@ -1,5 +1,5 @@
 class BigBoyClass {
-    public static void main(String[] args) 
+    public static void main(String[] args)
     {
        cum = 5 + 5 * 4;
     }
@@ -8,11 +8,15 @@ class BigBoyClass {
 class test {
     int cummers;
     boolean cum;
-    public boolean SetHas_Left(boolean val){
-        cummers = cummers + cum + 5;
-	 return true ;
+    int pepe;
+    public int Meth(int a, boolean b){
+	    return pepe;
     }
     public boolean SetHas_Left(boolean val){
-	 return true ;
+        cummers = cummers + cum + 5;
+	    return true ;
+    }
+    public boolean SetHas_Left(boolean val){
+	    return true ;
     }
 }
