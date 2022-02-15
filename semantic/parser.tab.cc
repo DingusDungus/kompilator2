@@ -905,7 +905,7 @@ namespace yy {
   case 5: // typeIdentifiers: %empty
 #line 81 "parser.yy"
                 {
-                 yylhs.value.as < Node * > () = new Node("","");
+                 yylhs.value.as < Node * > () = new Node("TypeIdentifiers","");
                 }
 #line 911 "parser.tab.cc"
     break;
@@ -913,7 +913,7 @@ namespace yy {
   case 6: // typeIdentifiers: typeIdentifierList
 #line 85 "parser.yy"
                 {
-                  yylhs.value.as < Node * > () = new Node("", "");
+                  yylhs.value.as < Node * > () = new Node("TypeIdentifiers", "");
                   yylhs.value.as < Node * > ()->children.push_back(yystack_[0].value.as < Node * > ());
                 }
 #line 920 "parser.tab.cc"
@@ -922,7 +922,7 @@ namespace yy {
   case 7: // typeIdentifierList: typeIdentifier
 #line 92 "parser.yy"
                   {
-                    yylhs.value.as < Node * > () = new Node("", "");
+                    yylhs.value.as < Node * > () = new Node("TypeIdentifierList", "");
                     yylhs.value.as < Node * > ()->children.push_back(yystack_[0].value.as < Node * > ());
                   }
 #line 929 "parser.tab.cc"
@@ -931,7 +931,7 @@ namespace yy {
   case 8: // typeIdentifierList: typeIdentifierList COMMA typeIdentifier
 #line 97 "parser.yy"
                   {
-                    yylhs.value.as < Node * > () = new Node("", "");
+                    yylhs.value.as < Node * > () = new Node("TypeIdentifierList", "");
                     yylhs.value.as < Node * > ()->children.push_back(yystack_[2].value.as < Node * > ());
                     yylhs.value.as < Node * > ()->children.push_back(yystack_[0].value.as < Node * > ());
                   }
@@ -941,7 +941,7 @@ namespace yy {
   case 9: // expressions: %empty
 #line 105 "parser.yy"
                 {
-                  yylhs.value.as < Node * > () = new Node("","");
+                  yylhs.value.as < Node * > () = new Node("Expressions","");
                 }
 #line 947 "parser.tab.cc"
     break;
@@ -949,7 +949,7 @@ namespace yy {
   case 10: // expressions: expressionList
 #line 109 "parser.yy"
                 {
-                yylhs.value.as < Node * > () = new Node("", "");
+                yylhs.value.as < Node * > () = new Node("Expressions", "");
                 yylhs.value.as < Node * > ()->children.push_back(yystack_[0].value.as < Node * > ());
               }
 #line 956 "parser.tab.cc"
@@ -958,7 +958,7 @@ namespace yy {
   case 11: // expressionList: expression
 #line 117 "parser.yy"
               {
-                yylhs.value.as < Node * > () = new Node("", "");
+                yylhs.value.as < Node * > () = new Node("ExpressionList", "");
                 yylhs.value.as < Node * > ()->children.push_back(yystack_[0].value.as < Node * > ());
               }
 #line 965 "parser.tab.cc"
@@ -967,7 +967,7 @@ namespace yy {
   case 12: // expressionList: expressionList COMMA expression
 #line 122 "parser.yy"
               {
-                yylhs.value.as < Node * > () = new Node("", "");
+                yylhs.value.as < Node * > () = new Node("ExpressionList", "");
                 yylhs.value.as < Node * > ()->children.push_back(yystack_[2].value.as < Node * > ());
                 yylhs.value.as < Node * > ()->children.push_back(yystack_[0].value.as < Node * > ());
               }
@@ -989,7 +989,7 @@ namespace yy {
   case 14: // classDeclarationList: classDeclaration
 #line 139 "parser.yy"
                     {
-                      yylhs.value.as < Node * > () = new Node("", "");
+                      yylhs.value.as < Node * > () = new Node("ClassDeclarationList", "");
                       yylhs.value.as < Node * > ()->children.push_back(yystack_[0].value.as < Node * > ());
                     }
 #line 996 "parser.tab.cc"
@@ -998,7 +998,7 @@ namespace yy {
   case 15: // classDeclarationList: classDeclarationList classDeclaration
 #line 144 "parser.yy"
                     {
-                      yylhs.value.as < Node * > () = new Node("", "");
+                      yylhs.value.as < Node * > () = new Node("ClassDeclarationList", "");
                       yylhs.value.as < Node * > ()->children.push_back(yystack_[1].value.as < Node * > ());
                       yylhs.value.as < Node * > ()->children.push_back(yystack_[0].value.as < Node * > ());
                     }
@@ -1008,7 +1008,7 @@ namespace yy {
   case 16: // classDeclarations: %empty
 #line 152 "parser.yy"
                   {
-                    yylhs.value.as < Node * > () = new Node("","");
+                    yylhs.value.as < Node * > () = new Node("ClassDeclarations","");
                   }
 #line 1014 "parser.tab.cc"
     break;
@@ -1016,7 +1016,7 @@ namespace yy {
   case 17: // classDeclarations: classDeclarationList
 #line 156 "parser.yy"
                   {
-                    yylhs.value.as < Node * > () = new Node("", "");
+                    yylhs.value.as < Node * > () = new Node("ClassDeclarations", "");
                     yylhs.value.as < Node * > ()->children.push_back(yystack_[0].value.as < Node * > ());
                   }
 #line 1023 "parser.tab.cc"
@@ -1042,7 +1042,7 @@ namespace yy {
   case 19: // methodDeclarationList: methodDeclaration
 #line 176 "parser.yy"
                         {
-                          yylhs.value.as < Node * > () = new Node("", "");
+                          yylhs.value.as < Node * > () = new Node("MethodDeclarationList", "");
                           yylhs.value.as < Node * > ()->children.push_back(yystack_[0].value.as < Node * > ());
                         }
 #line 1049 "parser.tab.cc"
@@ -1051,7 +1051,7 @@ namespace yy {
   case 20: // methodDeclarationList: methodDeclarationList methodDeclaration
 #line 181 "parser.yy"
                         {
-                          yylhs.value.as < Node * > () = new Node("", "");
+                          yylhs.value.as < Node * > () = new Node("MethodDeclarationList", "");
                           yylhs.value.as < Node * > ()->children.push_back(yystack_[1].value.as < Node * > ());
                           yylhs.value.as < Node * > ()->children.push_back(yystack_[0].value.as < Node * > ());
                         }
@@ -1061,7 +1061,7 @@ namespace yy {
   case 21: // methodDeclarations: %empty
 #line 189 "parser.yy"
                   {
-                    yylhs.value.as < Node * > () = new Node("","");
+                    yylhs.value.as < Node * > () = new Node("MethodDeclarations","");
                   }
 #line 1067 "parser.tab.cc"
     break;
@@ -1069,7 +1069,7 @@ namespace yy {
   case 22: // methodDeclarations: methodDeclarationList
 #line 193 "parser.yy"
                   {
-                    yylhs.value.as < Node * > () = new Node("", "");
+                    yylhs.value.as < Node * > () = new Node("MethodDeclarations", "");
                     yylhs.value.as < Node * > ()->children.push_back(yystack_[0].value.as < Node * > ());
                   }
 #line 1076 "parser.tab.cc"
@@ -1078,7 +1078,7 @@ namespace yy {
   case 23: // extendsIdentifier: %empty
 #line 201 "parser.yy"
                   {
-                    yylhs.value.as < Node * > () = new Node("","");
+                    yylhs.value.as < Node * > () = new Node("ExtendsIdentifier","");
                   }
 #line 1084 "parser.tab.cc"
     break;
@@ -1095,7 +1095,7 @@ namespace yy {
   case 25: // varDeclarations: %empty
 #line 212 "parser.yy"
                 {
-                  yylhs.value.as < Node * > () = new Node("","");
+                  yylhs.value.as < Node * > () = new Node("varDeclarations","");
                 }
 #line 1101 "parser.tab.cc"
     break;
@@ -1103,7 +1103,7 @@ namespace yy {
   case 26: // varDeclarations: varDeclarations varDeclaration
 #line 216 "parser.yy"
                 {
-                  yylhs.value.as < Node * > () = new Node("", "");
+                  yylhs.value.as < Node * > () = new Node("varDeclarations", "");
                   yylhs.value.as < Node * > ()->children.push_back(yystack_[1].value.as < Node * > ());
                   yylhs.value.as < Node * > ()->children.push_back(yystack_[0].value.as < Node * > ());
                 }
@@ -1156,7 +1156,7 @@ namespace yy {
   case 32: // statements: %empty
 #line 252 "parser.yy"
             {
-              yylhs.value.as < Node * > () = new Node("","");
+              yylhs.value.as < Node * > () = new Node("Statements","");
             }
 #line 1162 "parser.tab.cc"
     break;
@@ -1164,7 +1164,7 @@ namespace yy {
   case 33: // statements: statementList
 #line 256 "parser.yy"
             {
-              yylhs.value.as < Node * > () = new Node("", "");
+              yylhs.value.as < Node * > () = new Node("Statements", "");
               yylhs.value.as < Node * > ()->children.push_back(yystack_[0].value.as < Node * > ());
             }
 #line 1171 "parser.tab.cc"
@@ -1173,7 +1173,7 @@ namespace yy {
   case 34: // statementList: statement
 #line 262 "parser.yy"
                 {
-                  yylhs.value.as < Node * > () = new Node("", "");
+                  yylhs.value.as < Node * > () = new Node("StatementList", "");
                   yylhs.value.as < Node * > ()->children.push_back(yystack_[0].value.as < Node * > ());
                 }
 #line 1180 "parser.tab.cc"
@@ -1182,7 +1182,7 @@ namespace yy {
   case 35: // statementList: statementList statement
 #line 267 "parser.yy"
                 {
-                  yylhs.value.as < Node * > () = new Node("", "");
+                  yylhs.value.as < Node * > () = new Node("StatementList", "");
                   yylhs.value.as < Node * > ()->children.push_back(yystack_[1].value.as < Node * > ());
                   yylhs.value.as < Node * > ()->children.push_back(yystack_[0].value.as < Node * > ());
                 }
@@ -1361,7 +1361,7 @@ namespace yy {
   case 53: // expression: expression DOT identifier LP expressions RP
 #line 376 "parser.yy"
             {
-              yylhs.value.as < Node * > () = new Node("Expression", "DotOP");
+              yylhs.value.as < Node * > () = new Node("Expression", "methodCall");
               yylhs.value.as < Node * > ()->children.push_back(yystack_[5].value.as < Node * > ());
               yylhs.value.as < Node * > ()->children.push_back(yystack_[3].value.as < Node * > ());
               yylhs.value.as < Node * > ()->children.push_back(yystack_[1].value.as < Node * > ());

@@ -79,23 +79,23 @@ typeIdentifier: type identifier
 typeIdentifiers:
                 /* empty */
                 {
-                 $$ = new Node("","");
+                 $$ = new Node("TypeIdentifiers","");
                 };|
                 typeIdentifierList
                 {
-                  $$ = new Node("", "");
+                  $$ = new Node("TypeIdentifiers", "");
                   $$->children.push_back($1);
                 };
 
 typeIdentifierList:
                   typeIdentifier
                   {
-                    $$ = new Node("", "");
+                    $$ = new Node("TypeIdentifierList", "");
                     $$->children.push_back($1);
                   };|
                   typeIdentifierList COMMA typeIdentifier
                   {
-                    $$ = new Node("", "");
+                    $$ = new Node("TypeIdentifierList", "");
                     $$->children.push_back($1);
                     $$->children.push_back($3);
                   };
@@ -103,11 +103,11 @@ typeIdentifierList:
 expressions:
                 /* empty */
                 {
-                  $$ = new Node("","");
+                  $$ = new Node("Expressions","");
                 };|
                 expressionList
                 {
-                $$ = new Node("", "");
+                $$ = new Node("Expressions", "");
                 $$->children.push_back($1);
               };
 
@@ -115,12 +115,12 @@ expressions:
 expressionList:
               expression
               {
-                $$ = new Node("", "");
+                $$ = new Node("ExpressionList", "");
                 $$->children.push_back($1);
               };|
               expressionList COMMA expression
               {
-                $$ = new Node("", "");
+                $$ = new Node("ExpressionList", "");
                 $$->children.push_back($1);
                 $$->children.push_back($3);
               };
@@ -137,12 +137,12 @@ classDeclaration: CLASS identifier extendsIdentifier LBRACE varDeclarations meth
 classDeclarationList:
                     classDeclaration
                     {
-                      $$ = new Node("", "");
+                      $$ = new Node("ClassDeclarationList", "");
                       $$->children.push_back($1);
                     };|
                     classDeclarationList classDeclaration
                     {
-                      $$ = new Node("", "");
+                      $$ = new Node("ClassDeclarationList", "");
                       $$->children.push_back($1);
                       $$->children.push_back($2);
                     };
@@ -150,11 +150,11 @@ classDeclarationList:
 classDeclarations:
                   /* empty */
                   {
-                    $$ = new Node("","");
+                    $$ = new Node("ClassDeclarations","");
                   };|
                   classDeclarationList
                   {
-                    $$ = new Node("", "");
+                    $$ = new Node("ClassDeclarations", "");
                     $$->children.push_back($1);
                   };
 
@@ -174,12 +174,12 @@ methodDeclaration:  PUBLIC type identifier LP typeIdentifiers RP LBRACE varDecla
 
 methodDeclarationList:  methodDeclaration
                         {
-                          $$ = new Node("", "");
+                          $$ = new Node("MethodDeclarationList", "");
                           $$->children.push_back($1);
                         };|
                         methodDeclarationList methodDeclaration
                         {
-                          $$ = new Node("", "");
+                          $$ = new Node("MethodDeclarationList", "");
                           $$->children.push_back($1);
                           $$->children.push_back($2);
                         };
@@ -187,11 +187,11 @@ methodDeclarationList:  methodDeclaration
 methodDeclarations:
                   /* empty */
                   {
-                    $$ = new Node("","");
+                    $$ = new Node("MethodDeclarations","");
                   };|
                   methodDeclarationList
                   {
-                    $$ = new Node("", "");
+                    $$ = new Node("MethodDeclarations", "");
                     $$->children.push_back($1);
                   };
 
@@ -199,7 +199,7 @@ methodDeclarations:
 extendsIdentifier:
                   /* empty */
                   {
-                    $$ = new Node("","");
+                    $$ = new Node("ExtendsIdentifier","");
                   }; |
                   EXTENDS identifier
                   {
@@ -210,11 +210,11 @@ extendsIdentifier:
 varDeclarations:
                 /* empty */
                 {
-                  $$ = new Node("","");
+                  $$ = new Node("varDeclarations","");
                 }; |
                 varDeclarations varDeclaration
                 {
-                  $$ = new Node("", "");
+                  $$ = new Node("varDeclarations", "");
                   $$->children.push_back($1);
                   $$->children.push_back($2);
                 };
@@ -250,22 +250,22 @@ type: INT LBRACKET RBRACKET
 statements:
             /* empty */
             {
-              $$ = new Node("","");
+              $$ = new Node("Statements","");
             }; |
             statementList
             {
-              $$ = new Node("", "");
+              $$ = new Node("Statements", "");
               $$->children.push_back($1);
             };
 
 statementList:  statement
                 {
-                  $$ = new Node("", "");
+                  $$ = new Node("StatementList", "");
                   $$->children.push_back($1);
                 };|
                 statementList statement
                 {
-                  $$ = new Node("", "");
+                  $$ = new Node("StatementList", "");
                   $$->children.push_back($1);
                   $$->children.push_back($2);
                 };
@@ -374,7 +374,7 @@ expression: expression AND expression
             };|
             expression DOT identifier LP expressions RP
             {
-              $$ = new Node("Expression", "DotOP");
+              $$ = new Node("Expression", "methodCall");
               $$->children.push_back($1);
               $$->children.push_back($3);
               $$->children.push_back($5);
