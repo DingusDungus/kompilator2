@@ -26,6 +26,7 @@ private:
     bool expressionCheck();
     bool expressionCheckRec(Node *nodePtr);
     void expressionCheckRecNode(Node *nodePtr);
+    void addParameters(Node *ptr, method *scopeRecord);
 
 public:
     symbolTable();

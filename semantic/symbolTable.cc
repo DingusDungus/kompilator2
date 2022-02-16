@@ -80,6 +80,8 @@ void symbolTable::stBuilderRec(Node *walker, Node *parent)
             // std::cout << "Record: type: " << newRecord->type << " id: " << newRecord->id << std::endl;
             declared(newRecord->id);
             enterScope();
+            child++;
+            addParameters((*child), newRecord);
             current->scopeRecord = newRecord;
             stBuilderRec((*next), walker);
             exitScope();
@@ -88,6 +90,23 @@ void symbolTable::stBuilderRec(Node *walker, Node *parent)
         {
             stBuilderRec((*next), walker);
         }
+    }
+}
+
+void symbolTable::addParameters(Node *ptr, method *scopeRecord)
+{
+    if (ptr->type == "TypeIdentifier")
+    {
+        auto child = ptr->children.begin();
+        std::string type = (*child)->value;
+        child++;
+        std::string id = (*child)->value;
+        scopeRecord->parameters.insert({id, type});
+    }
+    
+    for (auto i = ptr->children.begin(); i != ptr->children.end(); i++)
+    {
+        addParameters((*i), scopeRecord);
     }
 }
 
@@ -307,6 +326,10 @@ void symbolTable::expressionCheckRecNode(Node *nodePtr)
     else if (nodePtr->type == "BooleanExpression")
     {
         expressionElements.push_back("boolean");
+    }
+    else if (nodePtr->type == "ThisExpression")
+    {
+        expressionElements.push_back(current->scopeRecord->id);
     }
     for (auto i = nodePtr->children.begin(); i != nodePtr->children.end(); i++)
     {
