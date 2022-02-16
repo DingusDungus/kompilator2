@@ -276,8 +276,13 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
                 << " methodName: " << methodName
                 << " targetMethodType: " << targetMethod->type
                 << " returnIdentifier: " << returnType
-                << " returnType: " << targetReturn->type
+                // << " returnType: " << targetReturn->type
                 << std::endl;
+
+            auto params = targetMethod->parameters;
+            if (params.empty()) {
+                std::cout << "params empty" << std::endl;
+            }
             expressionCheckRec((*next));
             exitScope();
         }
