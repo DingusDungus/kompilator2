@@ -426,6 +426,10 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
             {
                 std::cout << "params empty" << std::endl;
             }
+            else {
+                std::cout << "params not empty" << std::endl;
+                std::cout << "Nr of params: " << params.size() << std::endl;
+            }
             expressionCheckRec((*next));
             exitScope();
         }

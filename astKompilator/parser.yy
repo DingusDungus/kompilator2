@@ -25,14 +25,15 @@
 %token <std::string> COMMA SEMI_C
 %token END 0 "end of file"
 
-%right <std::string> NOT
-%left <std::string> AND OR
+%left <std::string> OR
+%left <std::string> AND
 %left <std::string> LESSER EQUAL GREATER
 %left <std::string> PLUSOP MINUS
 %left <std::string> MULTOP DIVOP
 %left <std::string> DOT
 %right <std::string> ASSIGN
 %left <std::string> LBRACE LBRACKET
+%right <std::string> NOT
 
 
 // definition of the production rules. All production rules are of type Node
@@ -265,8 +266,7 @@ statementList:  statement
                 };|
                 statementList statement
                 {
-                  $$ = new Node("", "");
-                  $$->children.push_back($1);
+                  $$ = $1;
                   $$->children.push_back($2);
                 };
 

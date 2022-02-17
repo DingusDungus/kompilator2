@@ -424,9 +424,8 @@ namespace yy {
       // STATIC
       // COMMA
       // SEMI_C
-      // NOT
-      // AND
       // OR
+      // AND
       // LESSER
       // EQUAL
       // GREATER
@@ -438,6 +437,7 @@ namespace yy {
       // ASSIGN
       // LBRACE
       // LBRACKET
+      // NOT
       char dummy2[sizeof (std::string)];
     };
 
@@ -510,20 +510,20 @@ namespace yy {
     STATIC = 284,                  // STATIC
     COMMA = 285,                   // COMMA
     SEMI_C = 286,                  // SEMI_C
-    NOT = 287,                     // NOT
+    OR = 287,                      // OR
     AND = 288,                     // AND
-    OR = 289,                      // OR
-    LESSER = 290,                  // LESSER
-    EQUAL = 291,                   // EQUAL
-    GREATER = 292,                 // GREATER
-    PLUSOP = 293,                  // PLUSOP
-    MINUS = 294,                   // MINUS
-    MULTOP = 295,                  // MULTOP
-    DIVOP = 296,                   // DIVOP
-    DOT = 297,                     // DOT
-    ASSIGN = 298,                  // ASSIGN
-    LBRACE = 299,                  // LBRACE
-    LBRACKET = 300                 // LBRACKET
+    LESSER = 289,                  // LESSER
+    EQUAL = 290,                   // EQUAL
+    GREATER = 291,                 // GREATER
+    PLUSOP = 292,                  // PLUSOP
+    MINUS = 293,                   // MINUS
+    MULTOP = 294,                  // MULTOP
+    DIVOP = 295,                   // DIVOP
+    DOT = 296,                     // DOT
+    ASSIGN = 297,                  // ASSIGN
+    LBRACE = 298,                  // LBRACE
+    LBRACKET = 299,                // LBRACKET
+    NOT = 300                      // NOT
       };
       /// Backward compatibility alias (Bison 3.6).
       typedef token_kind_type yytokentype;
@@ -574,20 +574,20 @@ namespace yy {
         S_STATIC = 29,                           // STATIC
         S_COMMA = 30,                            // COMMA
         S_SEMI_C = 31,                           // SEMI_C
-        S_NOT = 32,                              // NOT
+        S_OR = 32,                               // OR
         S_AND = 33,                              // AND
-        S_OR = 34,                               // OR
-        S_LESSER = 35,                           // LESSER
-        S_EQUAL = 36,                            // EQUAL
-        S_GREATER = 37,                          // GREATER
-        S_PLUSOP = 38,                           // PLUSOP
-        S_MINUS = 39,                            // MINUS
-        S_MULTOP = 40,                           // MULTOP
-        S_DIVOP = 41,                            // DIVOP
-        S_DOT = 42,                              // DOT
-        S_ASSIGN = 43,                           // ASSIGN
-        S_LBRACE = 44,                           // LBRACE
-        S_LBRACKET = 45,                         // LBRACKET
+        S_LESSER = 34,                           // LESSER
+        S_EQUAL = 35,                            // EQUAL
+        S_GREATER = 36,                          // GREATER
+        S_PLUSOP = 37,                           // PLUSOP
+        S_MINUS = 38,                            // MINUS
+        S_MULTOP = 39,                           // MULTOP
+        S_DIVOP = 40,                            // DIVOP
+        S_DOT = 41,                              // DOT
+        S_ASSIGN = 42,                           // ASSIGN
+        S_LBRACE = 43,                           // LBRACE
+        S_LBRACKET = 44,                         // LBRACKET
+        S_NOT = 45,                              // NOT
         S_YYACCEPT = 46,                         // $accept
         S_goal = 47,                             // goal
         S_mainClass = 48,                        // mainClass
@@ -701,9 +701,8 @@ namespace yy {
       case symbol_kind::S_STATIC: // STATIC
       case symbol_kind::S_COMMA: // COMMA
       case symbol_kind::S_SEMI_C: // SEMI_C
-      case symbol_kind::S_NOT: // NOT
-      case symbol_kind::S_AND: // AND
       case symbol_kind::S_OR: // OR
+      case symbol_kind::S_AND: // AND
       case symbol_kind::S_LESSER: // LESSER
       case symbol_kind::S_EQUAL: // EQUAL
       case symbol_kind::S_GREATER: // GREATER
@@ -715,6 +714,7 @@ namespace yy {
       case symbol_kind::S_ASSIGN: // ASSIGN
       case symbol_kind::S_LBRACE: // LBRACE
       case symbol_kind::S_LBRACKET: // LBRACKET
+      case symbol_kind::S_NOT: // NOT
         value.move< std::string > (std::move (that.value));
         break;
 
@@ -840,9 +840,8 @@ switch (yykind)
       case symbol_kind::S_STATIC: // STATIC
       case symbol_kind::S_COMMA: // COMMA
       case symbol_kind::S_SEMI_C: // SEMI_C
-      case symbol_kind::S_NOT: // NOT
-      case symbol_kind::S_AND: // AND
       case symbol_kind::S_OR: // OR
+      case symbol_kind::S_AND: // AND
       case symbol_kind::S_LESSER: // LESSER
       case symbol_kind::S_EQUAL: // EQUAL
       case symbol_kind::S_GREATER: // GREATER
@@ -854,6 +853,7 @@ switch (yykind)
       case symbol_kind::S_ASSIGN: // ASSIGN
       case symbol_kind::S_LBRACE: // LBRACE
       case symbol_kind::S_LBRACKET: // LBRACKET
+      case symbol_kind::S_NOT: // NOT
         value.template destroy< std::string > ();
         break;
 
@@ -1486,16 +1486,16 @@ switch (yykind)
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
-      make_NOT (std::string v)
+      make_OR (std::string v)
       {
-        return symbol_type (token::NOT, std::move (v));
+        return symbol_type (token::OR, std::move (v));
       }
 #else
       static
       symbol_type
-      make_NOT (const std::string& v)
+      make_OR (const std::string& v)
       {
-        return symbol_type (token::NOT, v);
+        return symbol_type (token::OR, v);
       }
 #endif
 #if 201103L <= YY_CPLUSPLUS
@@ -1511,21 +1511,6 @@ switch (yykind)
       make_AND (const std::string& v)
       {
         return symbol_type (token::AND, v);
-      }
-#endif
-#if 201103L <= YY_CPLUSPLUS
-      static
-      symbol_type
-      make_OR (std::string v)
-      {
-        return symbol_type (token::OR, std::move (v));
-      }
-#else
-      static
-      symbol_type
-      make_OR (const std::string& v)
-      {
-        return symbol_type (token::OR, v);
       }
 #endif
 #if 201103L <= YY_CPLUSPLUS
@@ -1691,6 +1676,21 @@ switch (yykind)
       make_LBRACKET (const std::string& v)
       {
         return symbol_type (token::LBRACKET, v);
+      }
+#endif
+#if 201103L <= YY_CPLUSPLUS
+      static
+      symbol_type
+      make_NOT (std::string v)
+      {
+        return symbol_type (token::NOT, std::move (v));
+      }
+#else
+      static
+      symbol_type
+      make_NOT (const std::string& v)
+      {
+        return symbol_type (token::NOT, v);
       }
 #endif
 
@@ -2021,7 +2021,7 @@ switch (yykind)
     /// Constants.
     enum
     {
-      yylast_ = 291,     ///< Last index in yytable_.
+      yylast_ = 318,     ///< Last index in yytable_.
       yynnts_ = 24,  ///< Number of nonterminal symbols.
       yyfinal_ = 6 ///< Termination state number.
     };
@@ -2146,9 +2146,8 @@ switch (yykind)
       case symbol_kind::S_STATIC: // STATIC
       case symbol_kind::S_COMMA: // COMMA
       case symbol_kind::S_SEMI_C: // SEMI_C
-      case symbol_kind::S_NOT: // NOT
-      case symbol_kind::S_AND: // AND
       case symbol_kind::S_OR: // OR
+      case symbol_kind::S_AND: // AND
       case symbol_kind::S_LESSER: // LESSER
       case symbol_kind::S_EQUAL: // EQUAL
       case symbol_kind::S_GREATER: // GREATER
@@ -2160,6 +2159,7 @@ switch (yykind)
       case symbol_kind::S_ASSIGN: // ASSIGN
       case symbol_kind::S_LBRACE: // LBRACE
       case symbol_kind::S_LBRACKET: // LBRACKET
+      case symbol_kind::S_NOT: // NOT
         value.copy< std::string > (YY_MOVE (that.value));
         break;
 
@@ -2247,9 +2247,8 @@ switch (yykind)
       case symbol_kind::S_STATIC: // STATIC
       case symbol_kind::S_COMMA: // COMMA
       case symbol_kind::S_SEMI_C: // SEMI_C
-      case symbol_kind::S_NOT: // NOT
-      case symbol_kind::S_AND: // AND
       case symbol_kind::S_OR: // OR
+      case symbol_kind::S_AND: // AND
       case symbol_kind::S_LESSER: // LESSER
       case symbol_kind::S_EQUAL: // EQUAL
       case symbol_kind::S_GREATER: // GREATER
@@ -2261,6 +2260,7 @@ switch (yykind)
       case symbol_kind::S_ASSIGN: // ASSIGN
       case symbol_kind::S_LBRACE: // LBRACE
       case symbol_kind::S_LBRACKET: // LBRACKET
+      case symbol_kind::S_NOT: // NOT
         value.move< std::string > (YY_MOVE (s.value));
         break;
 
