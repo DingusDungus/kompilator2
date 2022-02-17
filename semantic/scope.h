@@ -76,7 +76,6 @@ public:
     {
         if (records.count(key) == 1)
         {
-            std::cout << "Lookup, key found!" << std::endl;
             record *record = records.find(key)->second;
             return record;
         }
