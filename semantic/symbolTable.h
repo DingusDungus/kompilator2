@@ -27,6 +27,7 @@ private:
     bool expressionCheckRec(Node *nodePtr);
     void expressionCheckRecNode(Node *nodePtr);
     void addParameters(Node *ptr, method *scopeRecord);
+    std::string getTypeLiteralExpression(std::string literal);
 
 public:
     symbolTable();

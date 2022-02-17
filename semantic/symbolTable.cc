@@ -279,6 +279,7 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
         else if ((*next)->type == "MethodDeclaration")
         {
             enterScope();
+            expressionCheckRec((*next));
             auto child = (*next)->children.begin();
             auto endChild = (*next)->children.end();
             endChild--;
@@ -289,13 +290,19 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
             std::string targetType = (*child)->value;
             child++;
             std::string methodName = (*child)->value;
-            method* targetMethod = (method*)lookup(methodName);
+            record* base = lookup(methodName);
+            method* targetMethod = (method*)base;
             record* targetReturn = lookup(returnType);
+            if (targetReturn) {
+                returnType = targetReturn->type;
+            }else{
+                returnType = (*endChild)->type;
+                returnType = getTypeLiteralExpression(returnType);
+            }
             std::cout << "methodType: " << targetType
                 << " methodName: " << methodName
                 << " targetMethodType: " << targetMethod->type
-                << " returnIdentifier: " << returnType
-                // << " returnType: " << targetReturn->type
+                << " returnType: " << returnType
                 << std::endl;
 
             auto params = targetMethod->parameters;
@@ -305,8 +312,14 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
             else {
                 std::cout << "params not empty" << std::endl;
                 std::cout << "Nr of params: " << params.size() << std::endl;
+                for (auto j = params.begin(); j != params.end(); ++j) {
+                    std::cout << "Method Parameters: type: "
+                        << j->second <<
+                        " id: "
+                        << j->first << std::endl;
+                }
             }
-            expressionCheckRec((*next));
+            expressionElements.clear();
             exitScope();
         }
         else
@@ -314,6 +327,18 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
             expressionCheckRec((*next));
         }
     }
+}
+
+std::string symbolTable::getTypeLiteralExpression(std::string literal){
+    if (literal == "IntegerLiteral")
+    {
+        return "int";
+    }
+    else if (literal == "BooleanExpression")
+    {
+        return "boolean";
+    }
+    return "n/a";
 }
 
 void symbolTable::expressionCheckRecNode(Node *nodePtr)
