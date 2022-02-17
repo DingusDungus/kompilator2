@@ -411,7 +411,6 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
         else if ((*next)->type == "MethodDeclaration")
         {
             enterScope();
-            expressionCheckRec((*next));
             auto child = (*next)->children.begin();
             auto endChild = (*next)->children.end();
             endChild--;
