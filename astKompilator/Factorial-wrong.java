@@ -8,7 +8,7 @@ class Fac {
 
     public int ComputeFac(int num){
 	int num_aux ;
-	a = a < b && !d || d > !c;
+	a < b && !d || d > !c;
   a = 1 + 3 / 19 + b - c * 9;
 	if (num < 1)
 	    num_aux = 1 ;
