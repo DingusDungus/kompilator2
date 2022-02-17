@@ -395,6 +395,19 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
             }
             exitScope();
         }
+        else if ((*next)->type == "MethodCall")
+        {
+            enterScope();
+            std::cout << "METHOD CALL!" << std::endl;
+            std::cout << "METHOD CALL!" << std::endl;
+            std::cout << "METHOD CALL!" << std::endl;
+            std::cout << "METHOD CALL!" << std::endl;
+            if (expressionCheckRec((*next)))
+            {
+                return true;
+            }
+            exitScope();
+        }
         else if ((*next)->type == "MethodDeclaration")
         {
             enterScope();
@@ -413,11 +426,23 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
             record* base = lookup(methodName);
             method* targetMethod = (method*)base;
             record* targetReturn = lookup(returnType);
+            std::string returnId = ""; // for error reporting
             if (targetReturn) {
                 returnType = targetReturn->type;
+                returnId = (*endChild)->value;
             }else{
                 returnType = (*endChild)->type;
                 returnType = getTypeLiteralExpression(returnType);
+                if (returnType == "n/a") {
+                    returnId = (*endChild)->value;
+                    auto params = targetMethod->parameters;
+                    returnType = "Undefined identifier";
+                    for (auto i = params.begin(); i != params.end(); ++i) {
+                        if (returnId == i->first) {
+                            returnType = i->second;
+                        }
+                    }
+                }
             }
             // std::cout << "methodType: " << targetType
                 // << " methodName: " << methodName
@@ -426,11 +451,12 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
                 // << std::endl;
             if (targetType != returnType) {
                 std::cout <<
-                    "Error: Return type in method "
+                    "Error: Return type in method: "
                     << methodName << " '"
                     << targetType << "' "
-                    << "doesn't match type being returned: '"
-                    << returnType << "' "
+                    << "doesn't match type being returned: "
+                    << returnId << " '"
+                    << returnType << "'"
                     << std::endl;
             }
             // more for methodCall checking, saving here for then
