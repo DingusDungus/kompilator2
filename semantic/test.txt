@@ -10,6 +10,7 @@ class test {
     boolean cum;
     int pepe;
     public int Meth(int a, boolean b){
+        pepe = 5;
 	    return pepe;
     }
     public boolean SetHas_Left(boolean val){

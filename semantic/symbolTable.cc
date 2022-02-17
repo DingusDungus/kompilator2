@@ -103,7 +103,7 @@ void symbolTable::addParameters(Node *ptr, method *scopeRecord)
         std::string id = (*child)->value;
         scopeRecord->parameters.insert({id, type});
     }
-    
+
     for (auto i = ptr->children.begin(); i != ptr->children.end(); i++)
     {
         addParameters((*i), scopeRecord);
@@ -224,6 +224,75 @@ bool symbolTable::duplicatesFoundRec(scope *ptr)
     return returnBool;
 }
 
+bool symbolTable::testType(Node *ptr, std::string type)
+{
+    expressionCheckRecNode(ptr);
+    if (expressionElements.size() > 0)
+    {
+        for (int i = 0; i < expressionElements.size(); i++)
+        {
+            if (type != expressionElements[i])
+            {
+                std::cout << "Error: Expression in "
+                          << current->scopeRecord->type
+                          << " "
+                          << current->scopeRecord->id
+                          << " consists of differing types\n";
+                return true;
+            }
+        }
+        expressionElements.clear();
+        return false;
+    }
+}
+bool symbolTable::testType(Node *ptr)
+{
+    expressionCheckRecNode(ptr);
+    if (expressionElements.size() > 0)
+    {
+        std::string type = expressionElements[0];
+        for (int i = 0; i < expressionElements.size(); i++)
+        {
+            if (type != expressionElements[i])
+            {
+                std::cout << "Error: Expression in "
+                          << current->scopeRecord->type
+                          << " "
+                          << current->scopeRecord->id
+                          << " consists of differing types\n";
+                return true;
+            }
+        }
+        expressionElements.clear();
+        return false;
+    }
+}
+bool symbolTable::testTypeIdentifier(Node *ptr)
+{
+    auto child = ptr->children.begin();
+    record *varRecord = current->lookup((*child)->value);
+    child++;
+    expressionCheckRec((*child));
+    if (expressionElements.size() > 0)
+    {
+        std::string type = varRecord->type;
+        for (int i = 0; i < expressionElements.size(); i++)
+        {
+            if (type != expressionElements[i])
+            {
+                std::cout << "Error: Assign statement in "
+                          << current->scopeRecord->type
+                          << " "
+                          << current->scopeRecord->id
+                          << " expression doesn't match identifier type\n";
+                return true;
+            }
+        }
+        expressionElements.clear();
+        return false;
+    }
+}
+
 bool symbolTable::expressionCheck()
 {
     current = root;
@@ -238,24 +307,77 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
     {
         if ((*next)->type == "Expression")
         {
-            expressionCheckRecNode((*next));
+            if (testType((*next)))
+            {
+                return true;
+            }
+        }
+        else if ((*next)->type == "IF_ElseStatement" || (*next)->type == "WhileStatement")
+        {
+            if (testType((*next), "boolean"))
+            {
+                return true;
+            }
+        }
+        else if ((*next)->type == "AssignStatement")
+        {
+            if (testTypeIdentifier((*next)))
+            {
+                return true;
+            }
+        }
+        else if ((*next)->type == "ArrayIndexAssignStatement")
+        {
+            if (testType((*next), "int"))
+            {
+                return true;
+            }
+            auto child = (*next)->children.begin();
+            child++;
+            expressionCheckRec((*child));
             if (expressionElements.size() > 0)
             {
-                std::string type = expressionElements[0];
+                std::string type = "int";
                 for (int i = 0; i < expressionElements.size(); i++)
                 {
                     if (type != expressionElements[i])
                     {
-                        std::cout << "Error: Expression in "
-                            << current->scopeRecord->type
-                            << " "
-                            << current->scopeRecord->id
-                            << " consists of differing types\n";
+                        std::cout << "Error: Assign statement in "
+                                  << current->scopeRecord->type
+                                  << " "
+                                  << current->scopeRecord->id
+                                  << " expression doesn't match identifier type\n";
                         return true;
                     }
                 }
                 expressionElements.clear();
-                return false;
+            }
+        }
+        else if ((*next)->type == "SystemOutPrintStatement")
+        {
+            if (testType((*next), "int"))
+            {
+                return true;
+            }
+            auto child = (*next)->children.begin();
+            child++;
+            expressionCheckRec((*child));
+            if (expressionElements.size() > 0)
+            {
+                std::string type = "int";
+                for (int i = 0; i < expressionElements.size(); i++)
+                {
+                    if (type != expressionElements[i])
+                    {
+                        std::cout << "Error: Assign statement in "
+                                  << current->scopeRecord->type
+                                  << " "
+                                  << current->scopeRecord->id
+                                  << " expression doesn't match identifier type\n";
+                        return true;
+                    }
+                }
+                expressionElements.clear();
             }
         }
         else if ((*next)->type == "MainClass")
@@ -282,24 +404,26 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
             auto child = (*next)->children.begin();
             auto endChild = (*next)->children.end();
             endChild--;
-            while ((*endChild)->children.empty() == false){
+            while ((*endChild)->children.empty() == false)
+            {
                 endChild = (*endChild)->children.begin();
             }
             std::string returnType = (*endChild)->value;
             std::string targetType = (*child)->value;
             child++;
             std::string methodName = (*child)->value;
-            method* targetMethod = (method*)lookup(methodName);
-            record* targetReturn = lookup(returnType);
+            method *targetMethod = (method *)lookup(methodName);
+            record *targetReturn = lookup(returnType);
             std::cout << "methodType: " << targetType
-                << " methodName: " << methodName
-                << " targetMethodType: " << targetMethod->type
-                << " returnIdentifier: " << returnType
-                // << " returnType: " << targetReturn->type
-                << std::endl;
+                      << " methodName: " << methodName
+                      << " targetMethodType: " << targetMethod->type
+                      << " returnIdentifier: " << returnType
+                      // << " returnType: " << targetReturn->type
+                      << std::endl;
 
             auto params = targetMethod->parameters;
-            if (params.empty()) {
+            if (params.empty())
+            {
                 std::cout << "params empty" << std::endl;
             }
             expressionCheckRec((*next));

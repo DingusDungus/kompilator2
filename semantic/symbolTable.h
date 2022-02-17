@@ -27,6 +27,10 @@ private:
     bool expressionCheckRec(Node *nodePtr);
     void expressionCheckRecNode(Node *nodePtr);
     void addParameters(Node *ptr, method *scopeRecord);
+    bool testType(Node *ptr, std::string type);
+    bool testType(Node *ptr);
+    bool testTypeIdentifier(Node *ptr);
+
 
 public:
     symbolTable();
