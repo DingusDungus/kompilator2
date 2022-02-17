@@ -298,6 +298,7 @@ bool symbolTable::expressionCheck()
     current = root;
     Node *nodePtr = nodeRoot;
     resetScopes();
+    bool returnBool;
     return expressionCheckRec(nodePtr);
 }
 
@@ -359,43 +360,39 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
             {
                 return true;
             }
-            auto child = (*next)->children.begin();
-            child++;
-            expressionCheckRec((*child));
-            if (expressionElements.size() > 0)
+        }
+        else if ((*next)->type == "dotlength")
+        {
+            if (testType((*next), "intArray"))
             {
-                std::string type = "int";
-                for (int i = 0; i < expressionElements.size(); i++)
-                {
-                    if (type != expressionElements[i])
-                    {
-                        std::cout << "Error: Assign statement in "
-                                  << current->scopeRecord->type
-                                  << " "
-                                  << current->scopeRecord->id
-                                  << " expression doesn't match identifier type\n";
-                        return true;
-                    }
-                }
-                expressionElements.clear();
+                return true;
             }
         }
         else if ((*next)->type == "MainClass")
         {
             enterScope();
-            expressionCheckRec((*next));
+            if (expressionCheckRec((*next)))
+            {
+                return true;
+            }
             exitScope();
         }
         else if ((*next)->type == "PublicMainMethod")
         {
             enterScope();
-            expressionCheckRec((*next));
+            if (expressionCheckRec((*next)))
+            {
+                return true;
+            }
             exitScope();
         }
         else if ((*next)->type == "ClassDeclaration")
         {
             enterScope();
-            expressionCheckRec((*next));
+            if (expressionCheckRec((*next)))
+            {
+                return true;
+            }
             exitScope();
         }
         else if ((*next)->type == "MethodDeclaration")
@@ -430,14 +427,21 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
                 std::cout << "params not empty" << std::endl;
                 std::cout << "Nr of params: " << params.size() << std::endl;
             }
-            expressionCheckRec((*next));
+            if (expressionCheckRec((*next)))
+            {
+                return true;
+            }
             exitScope();
         }
         else
         {
-            expressionCheckRec((*next));
+            if (expressionCheckRec((*next)))
+            {
+                return true;
+            }
         }
     }
+    return false;
 }
 
 void symbolTable::expressionCheckRecNode(Node *nodePtr)
@@ -458,6 +462,10 @@ void symbolTable::expressionCheckRecNode(Node *nodePtr)
     else if (nodePtr->type == "ThisExpression")
     {
         expressionElements.push_back(current->scopeRecord->id);
+    }
+    else if (nodePtr->type == "intArray")
+    {
+        expressionElements.push_back("intArray");
     }
     for (auto i = nodePtr->children.begin(); i != nodePtr->children.end(); i++)
     {
