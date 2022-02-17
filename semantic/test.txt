@@ -12,7 +12,7 @@ class test {
     public int Meth(int a, boolean b){
 	    boolean bob;
 	    bob = b;
-	    return 69;
+	    return true;
     }
     public boolean SetHas_Left(boolean val){
         cummers = cummers + cum + 5;

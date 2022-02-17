@@ -299,12 +299,23 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
                 returnType = (*endChild)->type;
                 returnType = getTypeLiteralExpression(returnType);
             }
-            std::cout << "methodType: " << targetType
-                << " methodName: " << methodName
-                << " targetMethodType: " << targetMethod->type
-                << " returnType: " << returnType
-                << std::endl;
+            // std::cout << "methodType: " << targetType
+                // << " methodName: " << methodName
+                // << " targetMethodType: " << targetMethod->type
+                // << " returnType: " << returnType
+                // << std::endl;
+            if (targetType != returnType) {
+                std::cout <<
+                    "Error: Return type in method "
+                    << methodName << " '"
+                    << targetType << "' "
+                    << "doesn't match type being returned: '"
+                    << returnType << "' "
+                    << std::endl;
+            }
 
+            // more for methodCall checking, saving here for then
+            // some other stuff above will be moved to methodCall
             auto params = targetMethod->parameters;
             if (params.empty()) {
                 std::cout << "params empty" << std::endl;
