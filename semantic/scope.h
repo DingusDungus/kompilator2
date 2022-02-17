@@ -102,6 +102,9 @@ public:
         for (auto i = records.begin();i != records.end();i++)
         {
             std::cout << "Record: type: " << i->second->type << " id: " << i->second->id << std::endl;
+            // if (i->second) {
+            // statements
+            // }
         }
         std::cout << std::endl;
         for (int i = 0; i < children.size();i++)

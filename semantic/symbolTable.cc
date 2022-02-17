@@ -103,7 +103,7 @@ void symbolTable::addParameters(Node *ptr, method *scopeRecord)
         std::string id = (*child)->value;
         scopeRecord->parameters.insert({id, type});
     }
-    
+
     for (auto i = ptr->children.begin(); i != ptr->children.end(); i++)
     {
         addParameters((*i), scopeRecord);
@@ -301,6 +301,10 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
             auto params = targetMethod->parameters;
             if (params.empty()) {
                 std::cout << "params empty" << std::endl;
+            }
+            else {
+                std::cout << "params not empty" << std::endl;
+                std::cout << "Nr of params: " << params.size() << std::endl;
             }
             expressionCheckRec((*next));
             exitScope();
