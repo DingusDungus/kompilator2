@@ -1,17 +1,21 @@
-class BigBoyClass
-{
-   public static void main(String[] args)
-   {
-      cum = 5;
-   }
+class BigBoyClass {
+    public static void main(String[] args) {
+        sum = test.Meth(69,true);
+    }
 }
 
-class testClass
-{
-   int var1;
-   public int testMethod(int param1, boolean param2)
-   {
-      return 5;
-   }
+class test {
+    int number;
+    boolean cum;
+    int[] pepe;
+    public int Meth(int a, boolean b) {
+        boolean bob;
+        bob = b;
+        a = a + 1;
+        return a;
+    }
+    public boolean SetHas_Left(boolean val) {
+        number = this.Meth(12,false);
+        return true;
+    }
 }
-

@@ -411,6 +411,19 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
             }
             exitScope();
         }
+        else if ((*next)->type == "MethodCall")
+        {
+            enterScope();
+            std::cout << "METHOD CALL!" << std::endl;
+            std::cout << "METHOD CALL!" << std::endl;
+            std::cout << "METHOD CALL!" << std::endl;
+            std::cout << "METHOD CALL!" << std::endl;
+            if (expressionCheckRec((*next)))
+            {
+                return true;
+            }
+            exitScope();
+        }
         else if ((*next)->type == "MethodDeclaration")
         {
             enterScope();
@@ -425,15 +438,44 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
             std::string targetType = (*child)->value;
             child++;
             std::string methodName = (*child)->value;
-            method *targetMethod = (method *)lookup(methodName);
-            record *targetReturn = lookup(returnType);
-            std::cout << "methodType: " << targetType
-                      << " methodName: " << methodName
-                      << " targetMethodType: " << targetMethod->type
-                      << " returnIdentifier: " << returnType
-                      // << " returnType: " << targetReturn->type
-                      << std::endl;
-
+            record* base = lookup(methodName);
+            method* targetMethod = (method*)base;
+            record* targetReturn = lookup(returnType);
+            std::string returnId = ""; // for error reporting
+            if (targetReturn) {
+                returnType = targetReturn->type;
+                returnId = (*endChild)->value;
+            }else{
+                returnType = (*endChild)->type;
+                returnType = getTypeLiteralExpression(returnType);
+                if (returnType == "n/a") {
+                    returnId = (*endChild)->value;
+                    auto params = targetMethod->parameters;
+                    returnType = "Undefined identifier";
+                    for (auto i = params.begin(); i != params.end(); ++i) {
+                        if (returnId == i->first) {
+                            returnType = i->second;
+                        }
+                    }
+                }
+            }
+            // std::cout << "methodType: " << targetType
+                // << " methodName: " << methodName
+                // << " targetMethodType: " << targetMethod->type
+                // << " returnType: " << returnType
+                // << std::endl;
+            if (targetType != returnType) {
+                std::cout <<
+                    "Error: Return type in method: "
+                    << methodName << " '"
+                    << targetType << "' "
+                    << "doesn't match type being returned: "
+                    << returnId << " '"
+                    << returnType << "'"
+                    << std::endl;
+            }
+            // more for methodCall checking, saving here for then
+            // some other stuff above will be moved to methodCall
             auto params = targetMethod->parameters;
             if (params.empty())
             {
@@ -442,6 +484,12 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
             else {
                 std::cout << "params not empty" << std::endl;
                 std::cout << "Nr of params: " << params.size() << std::endl;
+                for (auto j = params.begin(); j != params.end(); ++j) {
+                    std::cout << "Method Parameters: type: "
+                        << j->second <<
+                        " id: "
+                        << j->first << std::endl;
+                }
             }
             if (expressionCheckRec((*next)))
             {
@@ -458,6 +506,18 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
         }
     }
     return false;
+}
+
+std::string symbolTable::getTypeLiteralExpression(std::string literal){
+    if (literal == "IntegerLiteral")
+    {
+        return "int";
+    }
+    else if (literal == "BooleanExpression")
+    {
+        return "boolean";
+    }
+    return "n/a";
 }
 
 void symbolTable::expressionCheckRecNode(Node *nodePtr)

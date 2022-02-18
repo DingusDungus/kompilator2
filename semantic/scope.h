@@ -20,15 +20,12 @@ public:
 class Class : public record
 {
 public:
-    std::map<std::string, std::string> variables;
-    std::map<std::string, std::string> methods;
 };
 
 class method : public record
 {
 public:
     std::map<std::string, std::string> parameters;
-    std::map<std::string, std::string> methods;
 };
 
 class variable : public record
@@ -101,9 +98,16 @@ public:
         for (auto i = records.begin();i != records.end();i++)
         {
             std::cout << "Record: type: " << i->second->type << " id: " << i->second->id << std::endl;
-            // if (i->second) {
-            // statements
-            // }
+                record* base = i->second;
+            if (typeid(*base) == typeid(method*)){
+                method* m = (method*)base;
+                for (auto j = m->parameters.begin(); j != m->parameters.end(); ++j) {
+                    std::cout << "Method Parameters: type: "
+                        << j->second <<
+                        " id: "
+                        << j->first << std::endl;
+                }
+            }
         }
         std::cout << std::endl;
         for (int i = 0; i < children.size();i++)

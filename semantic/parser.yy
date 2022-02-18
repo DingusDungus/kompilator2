@@ -374,7 +374,7 @@ expression: expression AND expression
             };|
             expression DOT identifier LP expressions RP
             {
-              $$ = new Node("Expression", "methodCall");
+              $$ = new Node("MethodCall", "");
               $$->children.push_back($1);
               $$->children.push_back($3);
               $$->children.push_back($5);

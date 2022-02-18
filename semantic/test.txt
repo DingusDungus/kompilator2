@@ -8,10 +8,11 @@ class BigBoyClass {
 class test {
     int cummers;
     boolean cum;
-    int pepe;
+    int[] pepe;
     public int Meth(int a, boolean b){
-        pepe = 5;
-	    return pepe;
+	    boolean bob;
+	    bob = b;
+	    return true;
     }
     public boolean SetHas_Left(boolean val){
         cummers = cummers + cum + 5;
