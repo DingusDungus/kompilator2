@@ -312,6 +312,10 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
             {
                 return true;
             }
+            if (expressionCheckRec((*next)))
+            {
+                return true;
+            }
         }
         else if ((*next)->type == "IF_ElseStatement" || (*next)->type == "WhileStatement")
         {
@@ -319,10 +323,18 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
             {
                 return true;
             }
+            if (expressionCheckRec((*next)))
+            {
+                return true;
+            }
         }
         else if ((*next)->type == "AssignStatement")
         {
             if (testTypeIdentifier((*next)))
+            {
+                return true;
+            }
+            if (expressionCheckRec((*next)))
             {
                 return true;
             }
@@ -352,6 +364,10 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
                     }
                 }
                 expressionElements.clear();
+            }
+            if (expressionCheckRec((*next)))
+            {
+                return true;
             }
         }
         else if ((*next)->type == "SystemOutPrintStatement")
