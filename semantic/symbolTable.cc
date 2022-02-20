@@ -578,11 +578,11 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
                               << j->first << std::endl;
                 }
             }
+            exitScope();
             if (expressionCheckRec((*next)))
             {
                 return true;
             }
-            exitScope();
         }
         else
         {
