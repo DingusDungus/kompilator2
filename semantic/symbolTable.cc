@@ -321,7 +321,9 @@ method *symbolTable::methodLookup(std::string className, std::string methodName)
                     record *rec = classScope->lookup(methodName);
                     if (rec != nullptr)
                     {
-                        methodRecord = (method *)rec;
+                        std::cout << "methodcall, methodName: " <<
+                            rec->id << std::endl;
+                        methodRecord = (method*)rec;
                         current = origin;
                         std::cout << "Hello\n";
                         return methodRecord;
@@ -408,6 +410,7 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
                 }
                 else
                 {
+                    std::cout << "method exists, checking parameters" << std::endl;
                     std::vector<std::string> parameters;
                     for (auto i = methodRecord->parameters.begin(); i != methodRecord->parameters.end(); i++)
                     {
@@ -578,11 +581,11 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
                               << j->first << std::endl;
                 }
             }
-            exitScope();
             if (expressionCheckRec((*next)))
             {
                 return true;
             }
+            exitScope();
         }
         else
         {
