@@ -6,7 +6,7 @@ void symbolTable::stBuilderRec(Node *walker, Node *parent)
 {
     for (auto next = walker->children.begin(); next != walker->children.end(); next++)
     {
-        if ((*next)->type == "VarDeclaration")
+        if ((*next)->type == "VarDeclaration" || (*next)->type == "TypeIdentifier")
         {
             variable *newRecord = new variable();
             auto child = (*next)->children.begin();
@@ -226,7 +226,10 @@ bool symbolTable::duplicatesFoundRec(scope *ptr)
 
 bool symbolTable::testType(Node *ptr, std::string type)
 {
-    expressionCheckRecNode(ptr);
+    if (expressionCheckRecNode(ptr))
+    {
+        return true;
+    }
     if (expressionElements.size() > 0)
     {
         for (int i = 0; i < expressionElements.size(); i++)
@@ -247,7 +250,10 @@ bool symbolTable::testType(Node *ptr, std::string type)
 }
 bool symbolTable::testType(Node *ptr)
 {
-    expressionCheckRecNode(ptr);
+    if (expressionCheckRecNode(ptr))
+    {
+        return true;
+    }
     if (expressionElements.size() > 0)
     {
         std::string type = expressionElements[0];
@@ -272,7 +278,10 @@ bool symbolTable::testTypeIdentifier(Node *ptr)
     auto child = ptr->children.begin();
     record *varRecord = current->lookup((*child)->value);
     child++;
-    expressionCheckRec((*child));
+    if (expressionCheckRecNode((*child)))
+    {
+        return true;
+    }
     if (expressionElements.size() > 0)
     {
         std::string type = varRecord->type;
@@ -291,6 +300,40 @@ bool symbolTable::testTypeIdentifier(Node *ptr)
         expressionElements.clear();
         return false;
     }
+}
+
+method *symbolTable::methodLookup(std::string className, std::string methodName)
+{
+    method *methodRecord = nullptr;
+    std::cout << "Method: " << methodName << " class: " << className << "\n";
+    scope *origin = current;
+    while (current != nullptr)
+    {
+        if (current->isInScope(className))
+        {
+            scope *classScope;
+            for (int i = 0;i < current->children.size();i++)
+            {
+                if (current->children[i]->scopeRecord->id == className)
+                {
+                    std::cout << "Hit\n";
+                    classScope = current->children[i];
+                    record *rec = classScope->lookup(methodName);
+                    if (rec != nullptr)
+                    {
+                        methodRecord = (method *)rec;
+                        current = origin;
+                        std::cout << "Hello\n";
+                        return methodRecord;
+                    }
+                    break;
+                }
+            }
+            break;
+        }
+        current = current->parent;
+    }
+    return methodRecord;
 }
 
 bool symbolTable::expressionCheck()
@@ -330,13 +373,47 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
         }
         else if ((*next)->type == "AssignStatement")
         {
-            if (testTypeIdentifier((*next)))
+            auto child = (*next)->children.begin();
+            child++;
+            if ((*child)->type != "MethodCall")
             {
-                return true;
+                if (testType((*next)))
+                {
+                    return true;
+                }
+                if (expressionCheckRec((*next)))
+                {
+                    return true;
+                }
             }
-            if (expressionCheckRec((*next)))
+            else
             {
-                return true;
+                Node *methodCallNode = (*child);
+                auto mChild = methodCallNode->children.begin();
+                std::string className;
+                if ((*mChild)->type == "this")
+                {
+                    className = (*mChild)->value;
+                }
+                else
+                {
+                    className = (*(*mChild)->children.begin())->value;
+                }
+                mChild++;
+                method *methodRecord = methodLookup(className, (*mChild)->value);
+                if (methodRecord == nullptr)
+                {
+                    std::cout << "Error; method: " << (*mChild)->value << " does not exist!\n";
+                    return true;
+                }
+                else
+                {
+                    std::vector<std::string> parameters;
+                    for (auto i = methodRecord->parameters.begin(); i != methodRecord->parameters.end(); i++)
+                    {
+                        parameters.push_back(i->second);
+                    }
+                }
             }
         }
         else if ((*next)->type == "ArrayIndexAssignStatement")
@@ -376,10 +453,18 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
             {
                 return true;
             }
+            if (expressionCheckRec((*next)))
+            {
+                return true;
+            }
         }
         else if ((*next)->type == "dotlength")
         {
             if (testType((*next), "intArray"))
+            {
+                return true;
+            }
+            if (expressionCheckRec((*next)))
             {
                 return true;
             }
@@ -413,16 +498,11 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
         }
         else if ((*next)->type == "MethodCall")
         {
-            enterScope();
-            std::cout << "METHOD CALL!" << std::endl;
-            std::cout << "METHOD CALL!" << std::endl;
-            std::cout << "METHOD CALL!" << std::endl;
-            std::cout << "METHOD CALL!" << std::endl;
+            std::cout << "MEthOD!!!\n";
             if (expressionCheckRec((*next)))
             {
                 return true;
             }
-            exitScope();
         }
         else if ((*next)->type == "MethodDeclaration")
         {
@@ -438,41 +518,47 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
             std::string targetType = (*child)->value;
             child++;
             std::string methodName = (*child)->value;
-            record* base = lookup(methodName);
-            method* targetMethod = (method*)base;
-            record* targetReturn = lookup(returnType);
+            record *base = lookup(methodName);
+            method *targetMethod = (method *)base;
+            record *targetReturn = lookup(returnType);
             std::string returnId = ""; // for error reporting
-            if (targetReturn) {
+            if (targetReturn)
+            {
                 returnType = targetReturn->type;
                 returnId = (*endChild)->value;
-            }else{
+            }
+            else
+            {
                 returnType = (*endChild)->type;
                 returnType = getTypeLiteralExpression(returnType);
-                if (returnType == "n/a") {
+                if (returnType == "n/a")
+                {
                     returnId = (*endChild)->value;
                     auto params = targetMethod->parameters;
                     returnType = "Undefined identifier";
-                    for (auto i = params.begin(); i != params.end(); ++i) {
-                        if (returnId == i->first) {
+                    for (auto i = params.begin(); i != params.end(); ++i)
+                    {
+                        if (returnId == i->first)
+                        {
                             returnType = i->second;
                         }
                     }
                 }
             }
             // std::cout << "methodType: " << targetType
-                // << " methodName: " << methodName
-                // << " targetMethodType: " << targetMethod->type
-                // << " returnType: " << returnType
-                // << std::endl;
-            if (targetType != returnType) {
-                std::cout <<
-                    "Error: Return type in method: "
-                    << methodName << " '"
-                    << targetType << "' "
-                    << "doesn't match type being returned: "
-                    << returnId << " '"
-                    << returnType << "'"
-                    << std::endl;
+            // << " methodName: " << methodName
+            // << " targetMethodType: " << targetMethod->type
+            // << " returnType: " << returnType
+            // << std::endl;
+            if (targetType != returnType)
+            {
+                std::cout << "Error: Return type in method: "
+                          << methodName << " '"
+                          << targetType << "' "
+                          << "doesn't match type being returned: "
+                          << returnId << " '"
+                          << returnType << "'"
+                          << std::endl;
             }
             // more for methodCall checking, saving here for then
             // some other stuff above will be moved to methodCall
@@ -481,14 +567,15 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
             {
                 std::cout << "params empty" << std::endl;
             }
-            else {
+            else
+            {
                 std::cout << "params not empty" << std::endl;
                 std::cout << "Nr of params: " << params.size() << std::endl;
-                for (auto j = params.begin(); j != params.end(); ++j) {
+                for (auto j = params.begin(); j != params.end(); ++j)
+                {
                     std::cout << "Method Parameters: type: "
-                        << j->second <<
-                        " id: "
-                        << j->first << std::endl;
+                              << j->second << " id: "
+                              << j->first << std::endl;
                 }
             }
             if (expressionCheckRec((*next)))
@@ -508,7 +595,8 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
     return false;
 }
 
-std::string symbolTable::getTypeLiteralExpression(std::string literal){
+std::string symbolTable::getTypeLiteralExpression(std::string literal)
+{
     if (literal == "IntegerLiteral")
     {
         return "int";
@@ -520,12 +608,20 @@ std::string symbolTable::getTypeLiteralExpression(std::string literal){
     return "n/a";
 }
 
-void symbolTable::expressionCheckRecNode(Node *nodePtr)
+bool symbolTable::expressionCheckRecNode(Node *nodePtr)
 {
     if (nodePtr->type == "Identifier")
     {
         record *identifierVal = lookup(nodePtr->value);
-        expressionElements.push_back(identifierVal->type);
+        if (identifierVal != nullptr)
+        {
+            expressionElements.push_back(identifierVal->type);
+        }
+        else
+        {
+            std::cout << "Error: variable " << nodePtr->value << " is not declared\n";
+            return true;
+        }
     }
     else if (nodePtr->type == "IntegerLiteral")
     {
@@ -545,8 +641,12 @@ void symbolTable::expressionCheckRecNode(Node *nodePtr)
     }
     for (auto i = nodePtr->children.begin(); i != nodePtr->children.end(); i++)
     {
-        expressionCheckRecNode((*i));
+        if (expressionCheckRecNode((*i)))
+        {
+            return true;
+        }
     }
+    return false;
 }
 
 bool symbolTable::typeCheck()

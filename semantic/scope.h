@@ -124,6 +124,16 @@ public:
             children[i]->resetScope();
         }
     }
+
+    bool isInScope(std::string key)
+    {
+        if (records.count(key) == 1)
+        {
+            std::cout << "Hit!!! "<< key << "\n";
+            return true;
+        }
+        false;
+    }
 };
 
 #endif

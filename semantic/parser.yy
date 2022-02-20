@@ -121,8 +121,7 @@ expressionList:
               };|
               expressionList COMMA expression
               {
-                $$ = new Node("ExpressionList", "");
-                $$->children.push_back($1);
+                $$ = $1;
                 $$->children.push_back($3);
               };
 

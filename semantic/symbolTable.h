@@ -25,12 +25,13 @@ private:
     void declared(std::string key);
     bool expressionCheck();
     bool expressionCheckRec(Node *nodePtr);
-    void expressionCheckRecNode(Node *nodePtr);
+    bool expressionCheckRecNode(Node *nodePtr);
     void addParameters(Node *ptr, method *scopeRecord);
     std::string getTypeLiteralExpression(std::string literal);
     bool testType(Node *ptr, std::string type);
     bool testType(Node *ptr);
     bool testTypeIdentifier(Node *ptr);
+    method *methodLookup(std::string className, std::string methodName);
 
 public:
     symbolTable();
