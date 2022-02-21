@@ -34,6 +34,7 @@ private:
     method *methodLookup(std::string className, std::string methodName);
     std::vector<std::string> getParams(Node *ptr, std::vector<std::string> params);
     std::string getType(Node *ptr);
+    bool testMethodCallParams(Node *ptr);
 
 public:
     symbolTable();

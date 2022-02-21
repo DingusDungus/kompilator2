@@ -45,7 +45,7 @@ void symbolTable::stBuilderRec(Node *walker, Node *parent)
             method *newRecord = new method();
             auto child = (*next)->children.begin();
             newRecord->id = "main";
-            newRecord->type = "PublicMainMethod";
+            newRecord->type = "PublicMainMethod"; 
             newRecord->parameters.insert({(*child)->value, "String"});
             put(newRecord->id, newRecord);
             // std::cout << "Record: type: " << newRecord->type << " id: " << newRecord->id << std::endl;
@@ -305,7 +305,6 @@ bool symbolTable::testTypeIdentifier(Node *ptr)
 method *symbolTable::methodLookup(std::string className, std::string methodName)
 {
     method *methodRecord = nullptr;
-    std::cout << "Method: " << methodName << " class: " << className << "\n";
     scope *origin = current;
     while (current != nullptr)
     {
@@ -316,15 +315,12 @@ method *symbolTable::methodLookup(std::string className, std::string methodName)
             {
                 if (current->children[i]->scopeRecord->id == className)
                 {
-                    std::cout << "Hit\n";
                     classScope = current->children[i];
                     record *rec = classScope->lookup(methodName);
                     if (rec != nullptr)
                     {
-                        std::cout << "methodcall, methodName: " << rec->id << std::endl;
                         methodRecord = (method *)rec;
                         current = origin;
-                        std::cout << "Hello\n";
                         return methodRecord;
                     }
                     break;
@@ -379,7 +375,7 @@ std::string symbolTable::getType(Node *ptr)
 std::vector<std::string> symbolTable::getParams(Node *ptr, std::vector<std::string> params)
 {
     auto expressionList = ptr->children.begin();
-    for (auto i = (*expressionList)->children.begin();i != (*expressionList)->children.end();i++)
+    for (auto i = (*expressionList)->children.begin(); i != (*expressionList)->children.end(); i++)
     {
         params.push_back(getType((*i)));
     }
@@ -393,6 +389,22 @@ bool symbolTable::expressionCheck()
     resetScopes();
     bool returnBool;
     return expressionCheckRec(nodePtr);
+}
+
+bool symbolTable::testMethodCallParams(Node *ptr)
+{
+    auto child = ptr->children.begin();
+    child++;
+    child++;
+    auto expressionList = (*child)->children.begin();
+    for (auto i = (*expressionList)->children.begin(); i != (*expressionList)->children.end(); i++)
+    {
+        if (testType((*i)))
+        {
+            std::cout << "Error; methodcall parameter expression has differing types!\n";
+            return true;
+        }
+    }
 }
 
 bool symbolTable::expressionCheckRec(Node *nodePtr)
@@ -457,7 +469,7 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
                 }
                 else
                 {
-                    methodRecord = (method*)lookup((*mChild)->value);
+                    methodRecord = (method *)lookup((*mChild)->value);
                 }
                 if (methodRecord == nullptr)
                 {
@@ -467,7 +479,6 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
                 else
                 {
                     mChild++;
-                    std::cout << "method exists, checking parameters" << std::endl;
                     std::vector<std::string> params1;
                     std::vector<std::string> params2;
                     for (auto i = methodRecord->parameters.begin(); i != methodRecord->parameters.end(); i++)
@@ -480,13 +491,29 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
                         std::cout << "Error; Invalid number of parameters in methodcall!\n";
                         return true;
                     }
-                    for (int i = 0;i < params1.size();i++)
+                    for (int i = 0; i < params1.size(); i++)
                     {
                         if (params2[i] != params1[i])
                         {
                             std::cout << "Error; Invalid parameter in methodcall!\n";
                             return true;
                         }
+                    }
+                    if (testMethodCallParams((*child)))
+                    {
+                        return true;
+                    }
+                    child--;
+                    variable *assignRecord = (variable *)lookup((*child)->value);
+                    if (assignRecord == nullptr)
+                    {
+                        std::cout << "Error; variable " << (*child)->value << " is not declared!\n";
+                        return true;
+                    }
+                    if (assignRecord->type != methodRecord->type)
+                    {
+                        std::cout << "Error; return type is different from variable!\n";
+                        return true;
                     }
                 }
             }
@@ -573,10 +600,61 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
         }
         else if ((*next)->type == "MethodCall")
         {
-            std::cout << "MEthOD!!!\n";
-            if (expressionCheckRec((*next)))
+            auto child = (*next)->children.begin();
+            child++;
+            Node *methodCallNode = (*child);
+            auto mChild = methodCallNode->children.begin();
+            std::string className;
+            method *methodRecord;
+            if ((*mChild)->value == "this")
             {
+                className = (*mChild)->value;
+            }
+            else
+            {
+                className = (*(*mChild)->children.begin())->value;
+            }
+            mChild++;
+            if (className != "this")
+            {
+                methodRecord = methodLookup(className, (*mChild)->value);
+            }
+            else
+            {
+                methodRecord = (method *)lookup((*mChild)->value);
+            }
+            if (methodRecord == nullptr)
+            {
+                std::cout << "Error; method: " << (*mChild)->value << " does not exist!\n";
                 return true;
+            }
+            else
+            {
+                mChild++;
+                std::vector<std::string> params1;
+                std::vector<std::string> params2;
+                for (auto i = methodRecord->parameters.begin(); i != methodRecord->parameters.end(); i++)
+                {
+                    params1.push_back(i->second);
+                }
+                params2 = getParams((*mChild), params2);
+                if (params1.size() != params2.size())
+                {
+                    std::cout << "Error; Invalid number of parameters in methodcall!\n";
+                    return true;
+                }
+                for (int i = 0; i < params1.size(); i++)
+                {
+                    if (params2[i] != params1[i])
+                    {
+                        std::cout << "Error; Invalid parameter in methodcall!\n";
+                        return true;
+                    }
+                }
+                if (testMethodCallParams((*child)))
+                {
+                    return true;
+                }
             }
         }
         else if ((*next)->type == "MethodDeclaration")
@@ -634,24 +712,7 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
                           << returnId << " '"
                           << returnType << "'"
                           << std::endl;
-            }
-            // more for methodCall checking, saving here for then
-            // some other stuff above will be moved to methodCall
-            auto params = targetMethod->parameters;
-            if (params.empty())
-            {
-                std::cout << "params empty" << std::endl;
-            }
-            else
-            {
-                std::cout << "params not empty" << std::endl;
-                std::cout << "Nr of params: " << params.size() << std::endl;
-                for (auto j = params.begin(); j != params.end(); ++j)
-                {
-                    std::cout << "Method Parameters: type: "
-                              << j->second << " id: "
-                              << j->first << std::endl;
-                }
+                return true;
             }
             if (expressionCheckRec((*next)))
             {
