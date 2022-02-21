@@ -32,6 +32,8 @@ private:
     bool testType(Node *ptr);
     bool testTypeIdentifier(Node *ptr);
     method *methodLookup(std::string className, std::string methodName);
+    std::vector<std::string> getParams(Node *ptr, std::vector<std::string> params);
+    std::string getType(Node *ptr);
 
 public:
     symbolTable();

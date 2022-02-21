@@ -312,7 +312,7 @@ method *symbolTable::methodLookup(std::string className, std::string methodName)
         if (current->isInScope(className))
         {
             scope *classScope;
-            for (int i = 0;i < current->children.size();i++)
+            for (int i = 0; i < current->children.size(); i++)
             {
                 if (current->children[i]->scopeRecord->id == className)
                 {
@@ -321,9 +321,8 @@ method *symbolTable::methodLookup(std::string className, std::string methodName)
                     record *rec = classScope->lookup(methodName);
                     if (rec != nullptr)
                     {
-                        std::cout << "methodcall, methodName: " <<
-                            rec->id << std::endl;
-                        methodRecord = (method*)rec;
+                        std::cout << "methodcall, methodName: " << rec->id << std::endl;
+                        methodRecord = (method *)rec;
                         current = origin;
                         std::cout << "Hello\n";
                         return methodRecord;
@@ -336,6 +335,55 @@ method *symbolTable::methodLookup(std::string className, std::string methodName)
         current = current->parent;
     }
     return methodRecord;
+}
+
+std::string symbolTable::getType(Node *ptr)
+{
+    std::string type = "";
+    if (ptr->type == "Identifier")
+    {
+        record *identifierVal = lookup(ptr->value);
+        if (identifierVal != nullptr)
+        {
+            return identifierVal->type;
+        }
+        else
+        {
+            std::cout << "Error: variable " << ptr->value << " is not declared\n";
+            return "";
+        }
+    }
+    else if (ptr->type == "IntegerLiteral")
+    {
+        return "int";
+    }
+    else if (ptr->type == "BooleanExpression")
+    {
+        return "boolean";
+    }
+    else if (ptr->type == "ThisExpression")
+    {
+        return current->scopeRecord->id;
+    }
+    else if (ptr->type == "intArray")
+    {
+        return "intArray";
+    }
+    for (auto i = ptr->children.begin(); i != ptr->children.end(); i++)
+    {
+        type = getType((*i));
+    }
+    return type;
+}
+
+std::vector<std::string> symbolTable::getParams(Node *ptr, std::vector<std::string> params)
+{
+    auto expressionList = ptr->children.begin();
+    for (auto i = (*expressionList)->children.begin();i != (*expressionList)->children.end();i++)
+    {
+        params.push_back(getType((*i)));
+    }
+    return params;
 }
 
 bool symbolTable::expressionCheck()
@@ -393,7 +441,8 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
                 Node *methodCallNode = (*child);
                 auto mChild = methodCallNode->children.begin();
                 std::string className;
-                if ((*mChild)->type == "this")
+                method *methodRecord;
+                if ((*mChild)->value == "this")
                 {
                     className = (*mChild)->value;
                 }
@@ -402,7 +451,14 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
                     className = (*(*mChild)->children.begin())->value;
                 }
                 mChild++;
-                method *methodRecord = methodLookup(className, (*mChild)->value);
+                if (className != "this")
+                {
+                    methodRecord = methodLookup(className, (*mChild)->value);
+                }
+                else
+                {
+                    methodRecord = (method*)lookup((*mChild)->value);
+                }
                 if (methodRecord == nullptr)
                 {
                     std::cout << "Error; method: " << (*mChild)->value << " does not exist!\n";
@@ -410,11 +466,27 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
                 }
                 else
                 {
+                    mChild++;
                     std::cout << "method exists, checking parameters" << std::endl;
-                    std::vector<std::string> parameters;
+                    std::vector<std::string> params1;
+                    std::vector<std::string> params2;
                     for (auto i = methodRecord->parameters.begin(); i != methodRecord->parameters.end(); i++)
                     {
-                        parameters.push_back(i->second);
+                        params1.push_back(i->second);
+                    }
+                    params2 = getParams((*mChild), params2);
+                    if (params1.size() != params2.size())
+                    {
+                        std::cout << "Error; Invalid number of parameters in methodcall!\n";
+                        return true;
+                    }
+                    for (int i = 0;i < params1.size();i++)
+                    {
+                        if (params2[i] != params1[i])
+                        {
+                            std::cout << "Error; Invalid parameter in methodcall!\n";
+                            return true;
+                        }
                     }
                 }
             }
