@@ -826,239 +826,239 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 YY_RULE_SETUP
 #line 9 "lexer.flex"
-{printf("AddOp\n"); return yy::parser::make_PLUSOP(yytext);}
+{ return yy::parser::make_PLUSOP(yytext);}
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
 #line 10 "lexer.flex"
-{printf("MinusOp\n"); return yy::parser::make_MINUS(yytext);}
+{ return yy::parser::make_MINUS(yytext);}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
 #line 11 "lexer.flex"
-{printf("MultOp\n"); return yy::parser::make_MULTOP(yytext);}
+{ return yy::parser::make_MULTOP(yytext);}
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
 #line 12 "lexer.flex"
-{printf("DivOp\n"); return yy::parser::make_DIVOP(yytext);}
+{ return yy::parser::make_DIVOP(yytext);}
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
 #line 13 "lexer.flex"
-{printf("AssignOp\n"); return yy::parser::make_ASSIGN(yytext);}
+{ return yy::parser::make_ASSIGN(yytext);}
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
 #line 14 "lexer.flex"
-{printf("EqualOp\n"); return yy::parser::make_EQUAL(yytext);}
+{ return yy::parser::make_EQUAL(yytext);}
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
 #line 15 "lexer.flex"
-{printf("NotOp\n"); return yy::parser::make_NOT(yytext);}
+{ return yy::parser::make_NOT(yytext);}
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
 #line 16 "lexer.flex"
-{printf("LesserOp\n"); return yy::parser::make_LESSER(yytext);}
+{ return yy::parser::make_LESSER(yytext);}
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
 #line 17 "lexer.flex"
-{printf("GreaterOp\n"); return yy::parser::make_GREATER(yytext);}
+{ return yy::parser::make_GREATER(yytext);}
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
 #line 18 "lexer.flex"
-{printf("AndOp\n"); return yy::parser::make_AND(yytext);}
+{ return yy::parser::make_AND(yytext);}
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
 #line 19 "lexer.flex"
-{printf("OrOp\n"); return yy::parser::make_OR(yytext);}
+{ return yy::parser::make_OR(yytext);}
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
 #line 20 "lexer.flex"
-{printf("Dot\n"); return yy::parser::make_DOT(yytext);}
+{ return yy::parser::make_DOT(yytext);}
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
 #line 21 "lexer.flex"
-{printf("Comma\n"); return yy::parser::make_COMMA(yytext);}
+{ return yy::parser::make_COMMA(yytext);}
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
 #line 22 "lexer.flex"
-{printf("Semi_Colon\n"); return yy::parser::make_SEMI_C(yytext);}
+{ return yy::parser::make_SEMI_C(yytext);}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
 #line 23 "lexer.flex"
-{printf("LeftParan\n"); return yy::parser::make_LP(yytext);}
+{ return yy::parser::make_LP(yytext);}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
 #line 24 "lexer.flex"
-{printf("RightParan\n"); return yy::parser::make_RP(yytext);}
+{ return yy::parser::make_RP(yytext);}
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
 #line 25 "lexer.flex"
-{printf("LeftBracket\n"); return yy::parser::make_LBRACKET(yytext);}
+{ return yy::parser::make_LBRACKET(yytext);}
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
 #line 26 "lexer.flex"
-{printf("RightBracket\n"); return yy::parser::make_RBRACKET(yytext);}
+{ return yy::parser::make_RBRACKET(yytext);}
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
 #line 27 "lexer.flex"
-{printf("leftBrace\n"); return yy::parser::make_LBRACE(yytext);}
+{ return yy::parser::make_LBRACE(yytext);}
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
 #line 28 "lexer.flex"
-{printf("RightBrace\n"); return yy::parser::make_RBRACE(yytext);}
+{ return yy::parser::make_RBRACE(yytext);}
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
 #line 29 "lexer.flex"
-{printf("ForOp\n"); return yy::parser::make_FOR(yytext);}
+{ return yy::parser::make_FOR(yytext);}
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
 #line 30 "lexer.flex"
-{printf("ifOp\n"); return yy::parser::make_IF(yytext);}
+{ return yy::parser::make_IF(yytext);}
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
 #line 31 "lexer.flex"
-{printf("ElseOp\n"); return yy::parser::make_ELSE(yytext);}
+{ return yy::parser::make_ELSE(yytext);}
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
 #line 32 "lexer.flex"
-{printf("WhileOp\n"); return yy::parser::make_WHILE(yytext);}
+{ return yy::parser::make_WHILE(yytext);}
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
 #line 33 "lexer.flex"
-{printf("Main\n"); return yy::parser::make_MAIN(yytext);}
+{ return yy::parser::make_MAIN(yytext);}
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
 #line 34 "lexer.flex"
-{printf("Extends\n"); return yy::parser::make_EXTENDS(yytext);}
+{ return yy::parser::make_EXTENDS(yytext);}
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
 #line 35 "lexer.flex"
-{printf("Extends\n"); return yy::parser::make_STATIC(yytext);}
+{ return yy::parser::make_STATIC(yytext);}
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
 #line 36 "lexer.flex"
-{printf("public\n"); return yy::parser::make_PUBLIC(yytext);}
+{ return yy::parser::make_PUBLIC(yytext);}
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
 #line 37 "lexer.flex"
-{printf("Void\n"); return yy::parser::make_VOID(yytext);}
+{ return yy::parser::make_VOID(yytext);}
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
 #line 38 "lexer.flex"
-{printf("class\n"); return yy::parser::make_CLASS(yytext);}
+{ return yy::parser::make_CLASS(yytext);}
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
 #line 39 "lexer.flex"
-{printf("return\n"); return yy::parser::make_RETURN(yytext);}
+{ return yy::parser::make_RETURN(yytext);}
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
 #line 40 "lexer.flex"
-{printf("String\n"); return yy::parser::make_STRING(yytext);}
+{ return yy::parser::make_STRING(yytext);}
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
 #line 41 "lexer.flex"
-{printf("Boolean\n"); return yy::parser::make_BOOLEAN(yytext);}
+{ return yy::parser::make_BOOLEAN(yytext);}
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
 #line 42 "lexer.flex"
-{printf("True\n"); return yy::parser::make_TRUE(yytext);}
+{ return yy::parser::make_TRUE(yytext);}
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
 #line 43 "lexer.flex"
-{printf("False\n"); return yy::parser::make_FALSE(yytext);}
+{ return yy::parser::make_FALSE(yytext);}
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
 #line 44 "lexer.flex"
-{printf("Int\n"); return yy::parser::make_INT(yytext);}
+{ return yy::parser::make_INT(yytext);}
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
 #line 45 "lexer.flex"
-{printf("This\n"); return yy::parser::make_THIS(yytext);}
+{ return yy::parser::make_THIS(yytext);}
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
 #line 46 "lexer.flex"
-{printf("New\n"); return yy::parser::make_NEW(yytext);}
+{ return yy::parser::make_NEW(yytext);}
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
 #line 47 "lexer.flex"
-{printf("Length\n"); return yy::parser::make_LENGTH(yytext);}
+{ return yy::parser::make_LENGTH(yytext);}
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
 #line 48 "lexer.flex"
-{printf("SOP\n"); return yy::parser::make_SOP(yytext);}
+{ return yy::parser::make_SOP(yytext);}
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
 #line 49 "lexer.flex"
-{printf("identifier: %s\n", yytext); return yy::parser::make_IDENTIFIER(yytext);}
+{ return yy::parser::make_IDENTIFIER(yytext);}
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
 #line 51 "lexer.flex"
-{printf("Integer: %s\n", yytext); return yy::parser::make_INTEGER(yytext);}
+{ return yy::parser::make_INTEGER(yytext);}
 	YY_BREAK
 case 43:
 /* rule 43 can match eol */
 YY_RULE_SETUP
 #line 52 "lexer.flex"
-{printf("Stringval: %s\n", yytext); return yy::parser::make_STRINGVAL(yytext);}
+{ return yy::parser::make_STRINGVAL(yytext);}
 	YY_BREAK
 case 44:
 /* rule 44 can match eol */
 YY_RULE_SETUP
 #line 54 "lexer.flex"
-{printf("Comment\n"); }
+{ }
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
 #line 55 "lexer.flex"
-{printf("Comment\n"); }
+{ }
 	YY_BREAK
 case 46:
 /* rule 46 can match eol */
 YY_RULE_SETUP
 #line 56 "lexer.flex"
-{printf("Whitespace\n"); }
+{ }
 	YY_BREAK
 case YY_STATE_EOF(INITIAL):
 #line 58 "lexer.flex"
-{printf("EOF\n"); return yy::parser::make_END();}
+{ return yy::parser::make_END();}
 	YY_BREAK
 case 47:
 YY_RULE_SETUP

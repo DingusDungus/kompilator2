@@ -306,6 +306,7 @@ method *symbolTable::methodLookup(std::string className, std::string methodName)
 {
     method *methodRecord = nullptr;
     scope *origin = current;
+    bool classFound = false;
     while (current != nullptr)
     {
         if (current->isInScope(className))
@@ -329,6 +330,11 @@ method *symbolTable::methodLookup(std::string className, std::string methodName)
             break;
         }
         current = current->parent;
+    }
+    if (!classFound)
+    {
+        std::cout << "Error; class: " << className << " was not found!\n";
+        return nullptr;
     }
     return methodRecord;
 }
@@ -409,28 +415,29 @@ bool symbolTable::testMethodCallParams(Node *ptr)
 
 bool symbolTable::expressionCheckRec(Node *nodePtr)
 {
+    bool returnBool;
     for (auto next = nodePtr->children.begin(); next != nodePtr->children.end(); next++)
     {
         if ((*next)->type == "Expression")
         {
             if (testType((*next)))
             {
-                return true;
+                returnBool = true;
             }
             if (expressionCheckRec((*next)))
             {
-                return true;
+                returnBool = true;
             }
         }
         else if ((*next)->type == "IF_ElseStatement" || (*next)->type == "WhileStatement")
         {
             if (testType((*next), "boolean"))
             {
-                return true;
+                returnBool = true;
             }
             if (expressionCheckRec((*next)))
             {
-                return true;
+                returnBool = true;
             }
         }
         else if ((*next)->type == "AssignStatement")
@@ -441,11 +448,11 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
             {
                 if (testType((*next)))
                 {
-                    return true;
+                    returnBool = true;
                 }
                 if (expressionCheckRec((*next)))
                 {
-                    return true;
+                    returnBool = true;
                 }
             }
             else
@@ -474,7 +481,7 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
                 if (methodRecord == nullptr)
                 {
                     std::cout << "Error; method: " << (*mChild)->value << " does not exist!\n";
-                    return true;
+                    returnBool = true;
                 }
                 else
                 {
@@ -489,31 +496,31 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
                     if (params1.size() != params2.size())
                     {
                         std::cout << "Error; Invalid number of parameters in methodcall!\n";
-                        return true;
+                        returnBool = true;
                     }
                     for (int i = 0; i < params1.size(); i++)
                     {
                         if (params2[i] != params1[i])
                         {
                             std::cout << "Error; Invalid parameter in methodcall!\n";
-                            return true;
+                            returnBool = true;
                         }
                     }
                     if (testMethodCallParams((*child)))
                     {
-                        return true;
+                        returnBool = true;
                     }
                     child--;
                     variable *assignRecord = (variable *)lookup((*child)->value);
                     if (assignRecord == nullptr)
                     {
                         std::cout << "Error; variable " << (*child)->value << " is not declared!\n";
-                        return true;
+                        returnBool = true;
                     }
-                    if (assignRecord->type != methodRecord->type)
+                    else if (assignRecord->type != methodRecord->type)
                     {
                         std::cout << "Error; return type is different from variable!\n";
-                        return true;
+                        returnBool = true;
                     }
                 }
             }
@@ -522,7 +529,7 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
         {
             if (testType((*next), "int"))
             {
-                return true;
+                returnBool = true;
             }
             auto child = (*next)->children.begin();
             child++;
@@ -539,36 +546,37 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
                                   << " "
                                   << current->scopeRecord->id
                                   << " expression doesn't match identifier type\n";
-                        return true;
+                        returnBool = true;
                     }
                 }
                 expressionElements.clear();
             }
             if (expressionCheckRec((*next)))
             {
-                return true;
+                returnBool = true;
             }
         }
         else if ((*next)->type == "SystemOutPrintStatement")
         {
             if (testType((*next), "int"))
             {
-                return true;
+                std::cout << "Error; system.out.print() call does not have an integer as parameter\n";
+                returnBool = true;
             }
             if (expressionCheckRec((*next)))
             {
-                return true;
+                returnBool = true;
             }
         }
         else if ((*next)->type == "dotlength")
         {
             if (testType((*next), "intArray"))
             {
-                return true;
+                returnBool = true;
             }
             if (expressionCheckRec((*next)))
             {
-                return true;
+                returnBool = true;
             }
         }
         else if ((*next)->type == "MainClass")
@@ -576,7 +584,7 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
             enterScope();
             if (expressionCheckRec((*next)))
             {
-                return true;
+                returnBool = true;
             }
             exitScope();
         }
@@ -585,7 +593,7 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
             enterScope();
             if (expressionCheckRec((*next)))
             {
-                return true;
+                returnBool = true;
             }
             exitScope();
         }
@@ -594,7 +602,7 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
             enterScope();
             if (expressionCheckRec((*next)))
             {
-                return true;
+                returnBool = true;
             }
             exitScope();
         }
@@ -626,7 +634,7 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
             if (methodRecord == nullptr)
             {
                 std::cout << "Error; method: " << (*mChild)->value << " does not exist!\n";
-                return true;
+                returnBool = true;
             }
             else
             {
@@ -641,19 +649,19 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
                 if (params1.size() != params2.size())
                 {
                     std::cout << "Error; Invalid number of parameters in methodcall!\n";
-                    return true;
+                    returnBool = true;
                 }
                 for (int i = 0; i < params1.size(); i++)
                 {
                     if (params2[i] != params1[i])
                     {
                         std::cout << "Error; Invalid parameter in methodcall!\n";
-                        return true;
+                        returnBool = true;
                     }
                 }
                 if (testMethodCallParams((*child)))
                 {
-                    return true;
+                    returnBool = true;
                 }
             }
         }
@@ -712,11 +720,11 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
                           << returnId << " '"
                           << returnType << "'"
                           << std::endl;
-                return true;
+                returnBool = true;
             }
             if (expressionCheckRec((*next)))
             {
-                return true;
+                returnBool = true;
             }
             exitScope();
         }
@@ -724,11 +732,11 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
         {
             if (expressionCheckRec((*next)))
             {
-                return true;
+                returnBool = true;
             }
         }
     }
-    return false;
+    return returnBool;
 }
 
 std::string symbolTable::getTypeLiteralExpression(std::string literal)
