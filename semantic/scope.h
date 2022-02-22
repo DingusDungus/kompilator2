@@ -129,7 +129,6 @@ public:
     {
         if (records.count(key) == 1)
         {
-            std::cout << "Hit!!! "<< key << "\n";
             return true;
         }
         false;
