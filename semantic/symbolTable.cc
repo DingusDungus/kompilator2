@@ -45,7 +45,7 @@ void symbolTable::stBuilderRec(Node *walker, Node *parent)
             method *newRecord = new method();
             auto child = (*next)->children.begin();
             newRecord->id = "main";
-            newRecord->type = "PublicMainMethod"; 
+            newRecord->type = "PublicMainMethod";
             newRecord->parameters.insert({(*child)->value, "String"});
             put(newRecord->id, newRecord);
             // std::cout << "Record: type: " << newRecord->type << " id: " << newRecord->id << std::endl;
@@ -143,7 +143,9 @@ record *symbolTable::lookup(std::string key)
 
 void symbolTable::printSTtree()
 {
+    std::cout << "\n\n----- Symbol Table start -----" << std::endl;
     root->printRecords();
+    std::cout << "----- Symbol Table end -----\n\n" << std::endl;
 }
 
 void symbolTable::resetScopes()
@@ -558,14 +560,81 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
         }
         else if ((*next)->type == "SystemOutPrintStatement")
         {
-            if (testType((*next), "int"))
+            auto child = (*next)->children.begin();
+            if ((*child)->type != "MethodCall")
             {
-                std::cout << "Error; system.out.print() call does not have an integer as parameter\n";
-                returnBool = true;
+                if (testType((*next), "int"))
+                {
+                    return true;
+                }
+                if (expressionCheckRec((*next)))
+                {
+                    return true;
+                }
             }
-            if (expressionCheckRec((*next)))
+            else
             {
-                returnBool = true;
+                Node *methodCallNode = (*child);
+                auto mChild = methodCallNode->children.begin();
+                std::string className;
+                method *methodRecord;
+                if ((*mChild)->value == "this")
+                {
+                    className = (*mChild)->value;
+                }
+                else
+                {
+                    className = (*(*mChild)->children.begin())->value;
+                }
+                mChild++;
+                if (className != "this")
+                {
+                    methodRecord = methodLookup(className, (*mChild)->value);
+                }
+                else
+                {
+                    methodRecord = (method *)lookup((*mChild)->value);
+                }
+                if (methodRecord == nullptr)
+                {
+                    std::cout << "Error; method: " << (*mChild)->value << " does not exist!\n";
+                    return true;
+                }
+                else
+                {
+                    mChild++;
+                    std::vector<std::string> params1;
+                    std::vector<std::string> params2;
+                    for (auto i = methodRecord->parameters.begin();
+                            i != methodRecord->parameters.end(); i++)
+                    {
+                        params1.push_back(i->second);
+                    }
+                    params2 = getParams((*mChild), params2);
+                    if (params1.size() != params2.size())
+                    {
+                        std::cout << "Error; Invalid number of parameters in methodcall!\n";
+                        return true;
+                    }
+                    for (int i = 0; i < params1.size(); i++)
+                    {
+                        if (params2[i] != params1[i])
+                        {
+                            std::cout << "Error; Invalid parameter in methodcall!\n";
+                            return true;
+                        }
+                    }
+                    if (testMethodCallParams((*child)))
+                    {
+                        return true;
+                    }
+                    // check it returns INT for system.out
+                    if ("int" != methodRecord->type)
+                    {
+                        std::cout << "Error; return type is different from variable!\n";
+                        return true;
+                    }
+                }
             }
         }
         else if ((*next)->type == "dotlength")
@@ -706,11 +775,6 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
                     }
                 }
             }
-            // std::cout << "methodType: " << targetType
-            // << " methodName: " << methodName
-            // << " targetMethodType: " << targetMethod->type
-            // << " returnType: " << returnType
-            // << std::endl;
             if (targetType != returnType)
             {
                 std::cout << "Error: Return type in method: "

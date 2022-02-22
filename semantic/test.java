@@ -1,6 +1,6 @@
 class BigBoyClass {
     public static void main(String[] args) {
-        sum = test.Meth1(69,true);
+        System.out.println(test.Meth(69,true));
     }
 }
 
