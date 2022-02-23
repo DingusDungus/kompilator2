@@ -35,6 +35,8 @@ private:
     std::vector<std::string> getParams(Node *ptr, std::vector<std::string> params);
     std::string getType(Node *ptr);
     bool testMethodCallParams(Node *ptr);
+    bool testBoolExpression(Node *ptr);
+    bool isBoolChildren(Node *ptr);
 
 public:
     symbolTable();

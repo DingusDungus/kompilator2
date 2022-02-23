@@ -145,7 +145,8 @@ void symbolTable::printSTtree()
 {
     std::cout << "\n\n----- Symbol Table start -----" << std::endl;
     root->printRecords();
-    std::cout << "----- Symbol Table end -----\n\n" << std::endl;
+    std::cout << "----- Symbol Table end -----\n\n"
+              << std::endl;
 }
 
 void symbolTable::resetScopes()
@@ -232,6 +233,11 @@ bool symbolTable::testType(Node *ptr, std::string type)
     {
         return true;
     }
+    for (int i = 0; i < expressionElements.size(); i++)
+    {
+        std::cout << expressionElements[i] << " ";
+    }
+    std::cout << "\n";
     if (expressionElements.size() > 0)
     {
         for (int i = 0; i < expressionElements.size(); i++)
@@ -242,7 +248,7 @@ bool symbolTable::testType(Node *ptr, std::string type)
                           << current->scopeRecord->type
                           << " "
                           << current->scopeRecord->id
-                          << " consists of differing types\n";
+                          << " consists of differing types from " << type << "\n";
                 return true;
             }
         }
@@ -256,6 +262,11 @@ bool symbolTable::testType(Node *ptr)
     {
         return true;
     }
+    for (int i = 0; i < expressionElements.size(); i++)
+    {
+        std::cout << expressionElements[i] << " ";
+    }
+    std::cout << "\n";
     if (expressionElements.size() > 0)
     {
         std::string type = expressionElements[0];
@@ -284,6 +295,11 @@ bool symbolTable::testTypeIdentifier(Node *ptr)
     {
         return true;
     }
+    for (int i = 0; i < expressionElements.size(); i++)
+    {
+        std::cout << expressionElements[i] << " ";
+    }
+    std::cout << "\n";
     if (expressionElements.size() > 0)
     {
         std::string type = varRecord->type;
@@ -307,36 +323,29 @@ bool symbolTable::testTypeIdentifier(Node *ptr)
 method *symbolTable::methodLookup(std::string className, std::string methodName)
 {
     method *methodRecord = nullptr;
-    scope *origin = current;
-    bool classFound = false;
-    while (current != nullptr)
+    scope *walker = nullptr;
+    if (className != "this")
     {
-        if (current->isInScope(className))
+        bool classFound = false;
+        for (int i = 0; i < root->children.size(); i++)
         {
-            scope *classScope;
-            for (int i = 0; i < current->children.size(); i++)
+            if (root->children[i]->scopeRecord->id == className)
             {
-                if (current->children[i]->scopeRecord->id == className)
-                {
-                    classScope = current->children[i];
-                    record *rec = classScope->lookup(methodName);
-                    if (rec != nullptr)
-                    {
-                        methodRecord = (method *)rec;
-                        current = origin;
-                        return methodRecord;
-                    }
-                    break;
-                }
+                walker = root->children[i];
+                classFound = true;
+                methodRecord = (method *)walker->lookup(methodName);
+                break;
             }
-            break;
         }
-        current = current->parent;
+        if (!classFound)
+        {
+            std::cout << "Error; class: " << className << " was not found!\n";
+            return nullptr;
+        }
     }
-    if (!classFound)
+    else
     {
-        std::cout << "Error; class: " << className << " was not found!\n";
-        return nullptr;
+        methodRecord = (method *)current->lookup(methodName);
     }
     return methodRecord;
 }
@@ -371,7 +380,7 @@ std::string symbolTable::getType(Node *ptr)
     }
     else if (ptr->type == "intArray")
     {
-        return "intArray";
+        return "int";
     }
     for (auto i = ptr->children.begin(); i != ptr->children.end(); i++)
     {
@@ -415,6 +424,18 @@ bool symbolTable::testMethodCallParams(Node *ptr)
     }
 }
 
+bool symbolTable::isBoolChildren(Node *ptr)
+{
+    for (auto i = ptr->children.begin(); i != ptr->children.end(); i++)
+    {
+        if (!((*i)->value == "AndOP" || (*i)->value == "OrOP" || (*i)->value == "NotOP" || (*i)->value == "GreaterOP" || (*i)->value == "LesserOP" || (*i)->value == "EqualsOP"))
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
 bool symbolTable::expressionCheckRec(Node *nodePtr)
 {
     bool returnBool;
@@ -422,109 +443,40 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
     {
         if ((*next)->type == "Expression")
         {
+            std::cout << "Expression\n";
             if (testType((*next)))
             {
                 returnBool = true;
             }
-            if (expressionCheckRec((*next)))
+            else if (expressionCheckRec((*next)))
             {
                 returnBool = true;
             }
         }
         else if ((*next)->type == "IF_ElseStatement" || (*next)->type == "WhileStatement")
         {
-            if (testType((*next), "boolean"))
+            if (testBoolExpression((*next)))
             {
+                std::cout << "Error; boolean expression incorrect\n";
                 returnBool = true;
             }
-            if (expressionCheckRec((*next)))
+            else if (expressionCheckRec((*next)))
             {
                 returnBool = true;
             }
         }
         else if ((*next)->type == "AssignStatement")
         {
+            std::cout << "AssignStatement\n";
             auto child = (*next)->children.begin();
             child++;
-            if ((*child)->type != "MethodCall")
+            if (testType((*next)))
             {
-                if (testType((*next)))
-                {
-                    returnBool = true;
-                }
-                if (expressionCheckRec((*next)))
-                {
-                    returnBool = true;
-                }
+                returnBool = true;
             }
-            else
+            else if (expressionCheckRec((*next)))
             {
-                Node *methodCallNode = (*child);
-                auto mChild = methodCallNode->children.begin();
-                std::string className;
-                method *methodRecord;
-                if ((*mChild)->value == "this")
-                {
-                    className = (*mChild)->value;
-                }
-                else
-                {
-                    className = (*(*mChild)->children.begin())->value;
-                }
-                mChild++;
-                if (className != "this")
-                {
-                    methodRecord = methodLookup(className, (*mChild)->value);
-                }
-                else
-                {
-                    methodRecord = (method *)lookup((*mChild)->value);
-                }
-                if (methodRecord == nullptr)
-                {
-                    std::cout << "Error; method: " << (*mChild)->value << " does not exist!\n";
-                    returnBool = true;
-                }
-                else
-                {
-                    mChild++;
-                    std::vector<std::string> params1;
-                    std::vector<std::string> params2;
-                    for (auto i = methodRecord->parameters.begin(); i != methodRecord->parameters.end(); i++)
-                    {
-                        params1.push_back(i->second);
-                    }
-                    params2 = getParams((*mChild), params2);
-                    if (params1.size() != params2.size())
-                    {
-                        std::cout << "Error; Invalid number of parameters in methodcall!\n";
-                        returnBool = true;
-                    }
-                    for (int i = 0; i < params1.size(); i++)
-                    {
-                        if (params2[i] != params1[i])
-                        {
-                            std::cout << "Error; Invalid parameter in methodcall!\n";
-                            returnBool = true;
-                        }
-                    }
-                    if (testMethodCallParams((*child)))
-                    {
-                        returnBool = true;
-                    }
-                    child--;
-                    variable *assignRecord = (variable *)lookup((*child)->value);
-                    if (assignRecord == nullptr)
-                    {
-                        std::cout << "Error; variable " << (*child)->value << " is not declared!\n";
-                        returnBool = true;
-                    }
-                    else if (assignRecord->type != methodRecord->type)
-                    {
-                        std::cout << "Error; return type is different from variable!\n";
-                        returnBool = true;
-                    }
-                }
+                returnBool = true;
             }
         }
         else if ((*next)->type == "ArrayIndexAssignStatement")
@@ -535,7 +487,7 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
             }
             auto child = (*next)->children.begin();
             child++;
-            expressionCheckRec((*child));
+            expressionCheckRecNode((*child));
             if (expressionElements.size() > 0)
             {
                 std::string type = "int";
@@ -560,16 +512,17 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
         }
         else if ((*next)->type == "SystemOutPrintStatement")
         {
+            std::cout << "SOP\n";
             auto child = (*next)->children.begin();
             if ((*child)->type != "MethodCall")
             {
                 if (testType((*next), "int"))
                 {
-                    return true;
+                    returnBool = true;
                 }
-                if (expressionCheckRec((*next)))
+                else if (expressionCheckRec((*next)))
                 {
-                    return true;
+                    returnBool = true;
                 }
             }
             else
@@ -577,7 +530,7 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
                 Node *methodCallNode = (*child);
                 auto mChild = methodCallNode->children.begin();
                 std::string className;
-                method *methodRecord;
+                method *methodRecord = nullptr;
                 if ((*mChild)->value == "this")
                 {
                     className = (*mChild)->value;
@@ -587,18 +540,11 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
                     className = (*(*mChild)->children.begin())->value;
                 }
                 mChild++;
-                if (className != "this")
-                {
-                    methodRecord = methodLookup(className, (*mChild)->value);
-                }
-                else
-                {
-                    methodRecord = (method *)lookup((*mChild)->value);
-                }
+                methodRecord = methodLookup(className, (*mChild)->value);
                 if (methodRecord == nullptr)
                 {
                     std::cout << "Error; method: " << (*mChild)->value << " does not exist!\n";
-                    return true;
+                    returnBool = true;
                 }
                 else
                 {
@@ -606,7 +552,7 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
                     std::vector<std::string> params1;
                     std::vector<std::string> params2;
                     for (auto i = methodRecord->parameters.begin();
-                            i != methodRecord->parameters.end(); i++)
+                         i != methodRecord->parameters.end(); i++)
                     {
                         params1.push_back(i->second);
                     }
@@ -614,25 +560,25 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
                     if (params1.size() != params2.size())
                     {
                         std::cout << "Error; Invalid number of parameters in methodcall!\n";
-                        return true;
+                        returnBool = true;
                     }
                     for (int i = 0; i < params1.size(); i++)
                     {
                         if (params2[i] != params1[i])
                         {
                             std::cout << "Error; Invalid parameter in methodcall!\n";
-                            return true;
+                            returnBool = true;
                         }
                     }
                     if (testMethodCallParams((*child)))
                     {
-                        return true;
+                        returnBool = true;
                     }
                     // check it returns INT for system.out
                     if ("int" != methodRecord->type)
                     {
                         std::cout << "Error; return type is different from variable!\n";
-                        return true;
+                        returnBool = true;
                     }
                 }
             }
@@ -643,7 +589,7 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
             {
                 returnBool = true;
             }
-            if (expressionCheckRec((*next)))
+            else if (expressionCheckRec((*next)))
             {
                 returnBool = true;
             }
@@ -677,12 +623,10 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
         }
         else if ((*next)->type == "MethodCall")
         {
-            auto child = (*next)->children.begin();
-            child++;
-            Node *methodCallNode = (*child);
-            auto mChild = methodCallNode->children.begin();
+            std::cout << "MC\n";
+            auto mChild = (*next)->children.begin();
             std::string className;
-            method *methodRecord;
+            method *methodRecord = nullptr;
             if ((*mChild)->value == "this")
             {
                 className = (*mChild)->value;
@@ -692,18 +636,11 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
                 className = (*(*mChild)->children.begin())->value;
             }
             mChild++;
-            if (className != "this")
-            {
-                methodRecord = methodLookup(className, (*mChild)->value);
-            }
-            else
-            {
-                methodRecord = (method *)lookup((*mChild)->value);
-            }
+            methodRecord = methodLookup(className, (*mChild)->value);
             if (methodRecord == nullptr)
             {
                 std::cout << "Error; method: " << (*mChild)->value << " does not exist!\n";
-                returnBool = true;
+                return true;
             }
             else
             {
@@ -728,7 +665,7 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
                         returnBool = true;
                     }
                 }
-                if (testMethodCallParams((*child)))
+                if (testMethodCallParams((*mChild)))
                 {
                     returnBool = true;
                 }
@@ -816,6 +753,39 @@ std::string symbolTable::getTypeLiteralExpression(std::string literal)
     return "n/a";
 }
 
+bool symbolTable::testBoolExpression(Node *ptr)
+{
+    if (ptr->value == "AndOP" || ptr->value == "OrOP" || ptr->value == "NotOP")
+    {
+        std::cout << "1BoolOP\n";
+        if (!isBoolChildren(ptr))
+        {
+            std::cout << "Error; " << ptr->value << " does not have children of type boolean!\n";
+            return true;
+        }
+        return false;
+    }
+    else if (ptr->value == "GreaterOP" || ptr->value == "LesserOP" || ptr->value == "EqualsOP")
+    {
+        std::cout << "2BoolOP\n";
+        bool returnBool = false;
+        returnBool = testType(ptr, "int");
+        if (ptr->value == "EqualsOp")
+        {
+            returnBool = testType(ptr, "boolean");
+        }
+        return returnBool;
+    }
+    for (auto i = ptr->children.begin(); i != ptr->children.end(); i++)
+    {
+        if (testBoolExpression((*i)))
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
 bool symbolTable::expressionCheckRecNode(Node *nodePtr)
 {
     if (nodePtr->type == "Identifier")
@@ -823,7 +793,14 @@ bool symbolTable::expressionCheckRecNode(Node *nodePtr)
         record *identifierVal = lookup(nodePtr->value);
         if (identifierVal != nullptr)
         {
-            expressionElements.push_back(identifierVal->type);
+            if (identifierVal->type != "intArray")
+            {
+                expressionElements.push_back(identifierVal->type);
+            }
+            else
+            {
+                expressionElements.push_back("int");
+            }
         }
         else
         {
@@ -839,13 +816,32 @@ bool symbolTable::expressionCheckRecNode(Node *nodePtr)
     {
         expressionElements.push_back("boolean");
     }
-    else if (nodePtr->type == "ThisExpression")
+    else if (nodePtr->type == "MethodCall")
     {
-        expressionElements.push_back(current->scopeRecord->id);
+        auto mChild = nodePtr->children.begin();
+        std::string className;
+        method *methodRecord = nullptr;
+        if ((*mChild)->value == "this")
+        {
+            className = (*mChild)->value;
+        }
+        else
+        {
+            className = (*(*mChild)->children.begin())->value;
+        }
+        mChild++;
+        methodRecord = methodLookup(className, (*mChild)->value);
+        if (methodRecord == nullptr)
+        {
+            std::cout << "Error; " << (*mChild)->value << " does not exist!\n";
+            return true;
+        }
+        expressionElements.push_back(methodRecord->type);
+        return false;
     }
     else if (nodePtr->type == "intArray")
     {
-        expressionElements.push_back("intArray");
+        expressionElements.push_back("int");
     }
     for (auto i = nodePtr->children.begin(); i != nodePtr->children.end(); i++)
     {
