@@ -258,6 +258,7 @@ bool symbolTable::testType(Node *ptr, std::string type)
                           << " "
                           << current->scopeRecord->id
                           << " consists of differing types from " << type << "\n";
+                expressionElements.clear();
                 return true;
             }
         }
@@ -271,13 +272,16 @@ bool symbolTable::testType(Node *ptr)
     {
         return true;
     }
-    // for (int i = 0; i < expressionElements.size(); i++)
-    // {
-        // std::cout << expressionElements[i] << " ";
-    // }
-    // std::cout << "\n";
     if (expressionElements.size() > 0)
     {
+        // debug below
+        std::cout << "(debug) EXPElements: ";
+        for (int i = 0; i < expressionElements.size(); i++)
+        {
+            std::cout << expressionElements[i] << " ";
+        }
+        std::cout << "\n";
+        // debug above
         std::string type = expressionElements[0];
         for (int i = 0; i < expressionElements.size(); i++)
         {
@@ -287,7 +291,11 @@ bool symbolTable::testType(Node *ptr)
                           << current->scopeRecord->type
                           << " "
                           << current->scopeRecord->id
-                          << " consists of differing types\n";
+                          << " consists of differing types"
+                          << ", expected: "
+                          << type
+                          << std::endl;
+                expressionElements.clear();
                 return true;
             }
         }
