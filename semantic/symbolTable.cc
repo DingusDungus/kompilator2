@@ -696,6 +696,10 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
             }
             std::string returnType = (*endChild)->value;
             std::string targetType = (*child)->value;
+            if ((*child)->children.empty() == false){
+                auto targetChild = (*child)->children.begin();
+                targetType = (*targetChild)->value;
+            }
             child++;
             std::string methodName = (*child)->value;
             record *base = lookup(methodName);

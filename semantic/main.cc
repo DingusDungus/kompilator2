@@ -31,6 +31,7 @@ int main(int argc, char **argv)
     root->generate_tree();
   }
   ST.init(root);
+  ST.printSTtree();
   semanticAnalyser SA(ST, root);
   if (SA.analyse() == -1)
   {
