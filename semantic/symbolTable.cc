@@ -275,12 +275,12 @@ bool symbolTable::testType(Node *ptr)
     if (expressionElements.size() > 0)
     {
         // debug below
-        std::cout << "(debug) EXPElements: ";
-        for (int i = 0; i < expressionElements.size(); i++)
-        {
-            std::cout << expressionElements[i] << " ";
-        }
-        std::cout << "\n";
+        // std::cout << "(debug) EXPElements: ";
+        // for (int i = 0; i < expressionElements.size(); i++)
+        // {
+            // std::cout << expressionElements[i] << " ";
+        // }
+        // std::cout << "\n";
         // debug above
         std::string type = expressionElements[0];
         for (int i = 0; i < expressionElements.size(); i++)
@@ -592,16 +592,29 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
             {
                 Node *methodCallNode = (*child);
                 auto mChild = methodCallNode->children.begin();
+                auto mChildBase = mChild;
                 std::string className;
                 method *methodRecord = nullptr;
                 if ((*mChild)->value == "this")
                 {
                     className = (*mChild)->value;
+                    std::cout << "(SOP) className this: " << className << std::endl;
                 }
                 else
                 {
-                    className = (*(*mChild)->children.begin())->value;
+                    std::cout << "(debug) start while" << std::endl;
+                    while ((*mChild)->children.empty() == false)
+                    {
+                        mChild = (*mChild)->children.begin();
+                        if ((*mChild)->children.empty()) {
+                            std::cout << "(debug) going to break" << std::endl;
+                        }
+                    }
+                    std::cout << "Before className assign" << std::endl;
+                    className = (*mChild)->value;
+                    std::cout << "(SOP) className else: " << className << std::endl;
                 }
+                mChild = mChildBase;
                 mChild++;
                 methodRecord = methodLookup(className, (*mChild)->value);
                 if (methodRecord == nullptr)
@@ -688,16 +701,29 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
         {
             std::cout << "MethodCall\n";
             auto mChild = (*next)->children.begin();
+            auto mChildBase = mChild;
             std::string className;
             method *methodRecord = nullptr;
             if ((*mChild)->value == "this")
             {
                 className = (*mChild)->value;
+                std::cout << "(main) className this: " << className << std::endl;
             }
             else
             {
-                className = (*(*mChild)->children.begin())->value;
+                std::cout << "(debug) start while" << std::endl;
+                while ((*mChild)->children.empty() == false)
+                {
+                    mChild = (*mChild)->children.begin();
+                    if ((*mChild)->children.empty()) {
+                        std::cout << "(debug) going to break" << std::endl;
+                    }
+                }
+                std::cout << "Before className assign" << std::endl;
+                className = (*mChild)->value;
+                std::cout << "(main) className else: " << className << std::endl;
             }
+            mChild = mChildBase;
             mChild++;
             methodRecord = methodLookup(className, (*mChild)->value);
             if (methodRecord == nullptr)
@@ -885,17 +911,35 @@ bool symbolTable::expressionCheckRecNode(Node *nodePtr)
     else if (nodePtr->type == "MethodCall")
     {
         auto mChild = nodePtr->children.begin();
+        auto mChildBase = mChild;
         std::string className;
         method *methodRecord = nullptr;
         if ((*mChild)->value == "this")
         {
             className = (*mChild)->value;
+            std::cout << "(secondary) className this: " << className << std::endl;
         }
         else
         {
-            className = (*(*mChild)->children.begin())->value;
+            std::cout << "(debug) start while" << std::endl;
+            while ((*mChild)->children.empty() == false)
+            {
+                mChild = (*mChild)->children.begin();
+                if ((*mChild)->children.empty()) {
+                    std::cout << "(debug) reached while loop end" << std::endl;
+                }
+            }
+            std::cout << "Before className assign" << std::endl;
+            className = (*mChild)->value;
+            std::cout << "(secondary) className else: " << className << std::endl;
         }
+        mChild = mChildBase;
         mChild++;
+        /* debug */ if (className == ""){
+            std::cout << "!!HERE!!" << std::endl;
+            std::cout << "value: " << (*mChild)->value << std::endl;
+            std::cout << "id: " << (*mChild)->id << std::endl;
+        }
         methodRecord = methodLookup(className, (*mChild)->value);
         if (methodRecord == nullptr)
         {
