@@ -233,11 +233,11 @@ bool symbolTable::testType(Node *ptr, std::string type)
     {
         return true;
     }
-    for (int i = 0; i < expressionElements.size(); i++)
-    {
-        std::cout << expressionElements[i] << " ";
-    }
-    std::cout << "\n";
+    // for (int i = 0; i < expressionElements.size(); i++)
+    // {
+        // std::cout << expressionElements[i] << " ";
+    // }
+    // std::cout << "\n";
     if (expressionElements.size() > 0)
     {
         for (int i = 0; i < expressionElements.size(); i++)
@@ -262,11 +262,11 @@ bool symbolTable::testType(Node *ptr)
     {
         return true;
     }
-    for (int i = 0; i < expressionElements.size(); i++)
-    {
-        std::cout << expressionElements[i] << " ";
-    }
-    std::cout << "\n";
+    // for (int i = 0; i < expressionElements.size(); i++)
+    // {
+        // std::cout << expressionElements[i] << " ";
+    // }
+    // std::cout << "\n";
     if (expressionElements.size() > 0)
     {
         std::string type = expressionElements[0];
@@ -295,11 +295,11 @@ bool symbolTable::testTypeIdentifier(Node *ptr)
     {
         return true;
     }
-    for (int i = 0; i < expressionElements.size(); i++)
-    {
-        std::cout << expressionElements[i] << " ";
-    }
-    std::cout << "\n";
+    // for (int i = 0; i < expressionElements.size(); i++)
+    // {
+        // std::cout << expressionElements[i] << " ";
+    // }
+    // std::cout << "\n";
     if (expressionElements.size() > 0)
     {
         std::string type = varRecord->type;
@@ -634,7 +634,7 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
         }
         else if ((*next)->type == "MethodCall")
         {
-            std::cout << "MC\n";
+            std::cout << "MethodCall\n";
             auto mChild = (*next)->children.begin();
             std::string className;
             method *methodRecord = nullptr;
@@ -684,6 +684,7 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
         }
         else if ((*next)->type == "MethodDeclaration")
         {
+            std::cout << "MethodDeclaration" << std::endl;
             enterScope();
             auto child = (*next)->children.begin();
             auto endChild = (*next)->children.end();
@@ -768,7 +769,6 @@ bool symbolTable::testBoolExpression(Node *ptr)
 {
     if (ptr->value == "AndOP" || ptr->value == "OrOP" || ptr->value == "NotOP")
     {
-        std::cout << "1BoolOP\n";
         if (!isBoolChildren(ptr))
         {
             std::cout << "Error; " << ptr->value << " does not have children of type boolean!\n";
@@ -778,7 +778,6 @@ bool symbolTable::testBoolExpression(Node *ptr)
     }
     else if (ptr->value == "GreaterOP" || ptr->value == "LesserOP" || ptr->value == "EqualsOP")
     {
-        std::cout << "2BoolOP\n";
         bool returnBool = false;
         returnBool = testType(ptr, "int");
         if (ptr->value == "EqualsOp")
