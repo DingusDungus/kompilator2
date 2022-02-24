@@ -58,8 +58,8 @@ void symbolTable::stBuilderRec(Node *walker, Node *parent)
         else if ((*next)->type == "ClassDeclaration")
         {
             Class *newRecord = new Class();
-            auto child = walker->children.begin();
-            newRecord->id = (*child)->children.front()->value;
+            auto child = (*next)->children.begin();
+            newRecord->id = (*child)->value;
             newRecord->type = "Class";
             put(newRecord->id, newRecord);
             // std::cout << "Record: type: " << newRecord->type << " id: " << newRecord->id << std::endl;
@@ -326,13 +326,41 @@ method *symbolTable::methodLookup(std::string className, std::string methodName)
     scope *walker = nullptr;
     if (className != "this")
     {
+        std::cout << "MethLookUp: className: " <<
+            className <<
+            " methodName: " <<
+            methodName << std::endl;
+        std::string realClassName = "";
         bool classFound = false;
+        record* objectRecord = nullptr;
+        // take class name if it is actually a object identifier
+        // and look up the actual class it is an object of
+        // and put into object into classRecord.
+        objectRecord = lookup(className);
+        if (objectRecord != nullptr){
+            std::cout << "(debug) realClassName: " << objectRecord->type << std::endl;
+            realClassName = objectRecord->type;
+            if (realClassName != "Class"){
+                std::cout << "(debug) Fetched object: "
+                    << className
+                    << " actual class type: "
+                    << realClassName
+                    << std::endl;
+                std::cout << "(debug) Changed className to : " << realClassName << std::endl;
+                className = realClassName;
+            }
+        }
         for (int i = 0; i < root->children.size(); i++)
         {
+            std::cout << "scopeId: " << root->children[i]->scopeRecord->id << std::endl;
             if (root->children[i]->scopeRecord->id == className)
             {
                 walker = root->children[i];
                 classFound = true;
+                std::cout << "(debug) Class '"
+                    << className
+                    << "' found!!"
+                    << std::endl;
                 methodRecord = (method *)walker->lookup(methodName);
                 break;
             }
