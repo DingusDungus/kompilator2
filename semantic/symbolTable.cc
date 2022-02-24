@@ -73,7 +73,16 @@ void symbolTable::stBuilderRec(Node *walker, Node *parent)
         {
             method *newRecord = new method();
             auto child = (*next)->children.begin();
+            auto baseChild = child;
+            while ((*child)->children.empty() == false)
+            {
+                child = (*child)->children.begin();
+                if ((*child)->children.empty()) {
+                    break;
+                }
+            }
             newRecord->type = (*child)->value;
+            child = baseChild;
             child++;
             newRecord->id = (*child)->value;
             put(newRecord->id, newRecord);
