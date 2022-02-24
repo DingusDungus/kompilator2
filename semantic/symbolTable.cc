@@ -455,6 +455,7 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
         }
         else if ((*next)->type == "IF_ElseStatement" || (*next)->type == "WhileStatement")
         {
+            std::cout << "Else/if\n";
             if (testBoolExpression((*next)))
             {
                 std::cout << "Error; boolean expression incorrect\n";
