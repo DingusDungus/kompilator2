@@ -371,6 +371,12 @@ method *symbolTable::methodLookup(std::string className, std::string methodName)
                     << "' found!!"
                     << std::endl;
                 methodRecord = (method *)walker->lookup(methodName);
+                if(methodRecord != nullptr){
+                    std::cout << "(debug) Method '"
+                        << methodRecord->id
+                        << "' found!!"
+                        << std::endl;
+                }
                 break;
             }
         }
