@@ -37,6 +37,9 @@ private:
     bool testMethodCallParams(Node *ptr);
     bool testBoolExpression(Node *ptr);
     bool isBoolChildren(Node *ptr);
+    bool equalsTestType(Node *ptr);
+    bool testBoolEquals(Node *ptr);
+    bool varIsBool(Node *ptr);
 
 public:
     symbolTable();

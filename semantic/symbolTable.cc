@@ -233,11 +233,6 @@ bool symbolTable::testType(Node *ptr, std::string type)
     {
         return true;
     }
-    for (int i = 0; i < expressionElements.size(); i++)
-    {
-        std::cout << expressionElements[i] << " ";
-    }
-    std::cout << "\n";
     if (expressionElements.size() > 0)
     {
         for (int i = 0; i < expressionElements.size(); i++)
@@ -249,6 +244,7 @@ bool symbolTable::testType(Node *ptr, std::string type)
                           << " "
                           << current->scopeRecord->id
                           << " consists of differing types from " << type << "\n";
+                          expressionElements.clear();
                 return true;
             }
         }
@@ -262,11 +258,6 @@ bool symbolTable::testType(Node *ptr)
     {
         return true;
     }
-    for (int i = 0; i < expressionElements.size(); i++)
-    {
-        std::cout << expressionElements[i] << " ";
-    }
-    std::cout << "\n";
     if (expressionElements.size() > 0)
     {
         std::string type = expressionElements[0];
@@ -279,6 +270,7 @@ bool symbolTable::testType(Node *ptr)
                           << " "
                           << current->scopeRecord->id
                           << " consists of differing types\n";
+                          expressionElements.clear();
                 return true;
             }
         }
@@ -295,11 +287,6 @@ bool symbolTable::testTypeIdentifier(Node *ptr)
     {
         return true;
     }
-    for (int i = 0; i < expressionElements.size(); i++)
-    {
-        std::cout << expressionElements[i] << " ";
-    }
-    std::cout << "\n";
     if (expressionElements.size() > 0)
     {
         std::string type = varRecord->type;
@@ -312,6 +299,7 @@ bool symbolTable::testTypeIdentifier(Node *ptr)
                           << " "
                           << current->scopeRecord->id
                           << " expression doesn't match identifier type\n";
+                          expressionElements.clear();
                 return true;
             }
         }
@@ -392,12 +380,11 @@ std::string symbolTable::getType(Node *ptr)
 std::vector<std::string> symbolTable::getParams(Node *ptr, std::vector<std::string> params)
 {
     // if not empty
-    if(ptr->children.empty() == false)
+    if (ptr->children.empty() == false)
     {
         auto expressionList = ptr->children.begin();
         for (auto i = (*expressionList)->children.begin(); i != (*expressionList)->children.end(); i++)
         {
-            std::cout << "EXPL type: " << getType((*i)) << std::endl;
             params.push_back(getType((*i)));
         }
     }
@@ -415,11 +402,12 @@ bool symbolTable::expressionCheck()
 
 bool symbolTable::testMethodCallParams(Node *ptr)
 {
-    if (ptr->children.empty() == false){
+    if (ptr->children.empty() == false)
+    {
         auto child = ptr->children.begin();
         child++;
         child++;
-        if((*child)->children.empty() == false)
+        if ((*child)->children.empty() == false)
         {
             auto expressionList = (*child)->children.begin();
             for (auto i = (*expressionList)->children.begin(); i != (*expressionList)->children.end(); i++)
@@ -435,16 +423,89 @@ bool symbolTable::testMethodCallParams(Node *ptr)
     return false;
 }
 
+bool symbolTable::varIsBool(Node *ptr)
+{
+    Node *id = (*ptr->children.begin());
+    record *idRecord = lookup(id->value);
+    if (idRecord != nullptr && !(idRecord->type == "boolean"))
+    {
+        return false;
+    }
+    else if (idRecord == nullptr)
+    {
+        return false;
+    }
+}
+
 bool symbolTable::isBoolChildren(Node *ptr)
 {
     for (auto i = ptr->children.begin(); i != ptr->children.end(); i++)
     {
-        if (!((*i)->value == "AndOP" || (*i)->value == "OrOP" || (*i)->value == "NotOP" || (*i)->value == "GreaterOP" || (*i)->value == "LesserOP" || (*i)->value == "EqualsOP"))
+        if (!((*i)->value == "AndOP" || (*i)->value == "OrOP" || (*i)->value == "NotOP" || (*i)->value == "GreaterOP" || (*i)->value == "LesserOP" || (*i)->value == "EqualsOP" || (*i)->type == "BooleanExpression" || (*i)->type == "IdentifierExpression"))
+        {
+            return false;
+        }
+        if ((*i)->type == "IdentifierExpression")
+        {
+            Node *id = (*(*i)->children.begin());
+            record *idRecord = lookup(id->value);
+            if (idRecord != nullptr && !(idRecord->type == "boolean"))
+            {
+                std::cout << "Error; variable " << (*i)->value << " is not of type boolean!\n";
+                return false;
+            }
+            else if (idRecord == nullptr)
+            {
+                std::cout << "Error; " << id->value << " is undefined in boolean expression!\n";
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+bool symbolTable::testBoolEquals(Node *ptr)
+{
+    for (auto i = ptr->children.begin(); i != ptr->children.end(); i++)
+    {
+        if ((*i)->type == "IdentifierExpression")
+        {
+            Node *id = (*(*i)->children.begin());
+            record *idRecord = lookup(id->value);
+            if (idRecord != nullptr && !(idRecord->type == "boolean"))
+            {
+                return false;
+            }
+            else if (idRecord == nullptr)
+            {
+                std::cout << "Error; " << id->value << " is undefined in boolean expression!\n";
+                return false;
+            }
+        }
+        else if ((*i)->type == "BooleanExpression" || (*i)->value == "AndOP" || (*i)->value == "OrOP" || (*i)->value == "NotOP")
+        {
+            // do nothing
+        }
+        else
         {
             return false;
         }
     }
     return true;
+}
+
+bool symbolTable::equalsTestType(Node *ptr)
+{
+    bool isBooleanExpression = testBoolEquals(ptr);
+    if (!isBooleanExpression)
+    {
+        if (!testType(ptr, "int"))
+        {
+            return false;
+        }
+        return true;
+    }
+    return false;
 }
 
 bool symbolTable::expressionCheckRec(Node *nodePtr)
@@ -454,7 +515,10 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
     {
         if ((*next)->type == "Expression")
         {
-            std::cout << "Expression\n";
+            if(isBoolChildren((*next)))
+            {
+                return false;
+            }
             if (testType((*next)))
             {
                 returnBool = true;
@@ -463,10 +527,10 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
             {
                 returnBool = true;
             }
+            expressionElements.clear();
         }
         else if ((*next)->type == "IF_ElseStatement" || (*next)->type == "WhileStatement")
         {
-            std::cout << "Else/if\n";
             if (testBoolExpression((*next)))
             {
                 std::cout << "Error; boolean expression incorrect\n";
@@ -479,7 +543,6 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
         }
         else if ((*next)->type == "AssignStatement")
         {
-            std::cout << "AssignStatement\n";
             auto child = (*next)->children.begin();
             child++;
             if (testType((*next)))
@@ -490,6 +553,7 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
             {
                 returnBool = true;
             }
+            expressionElements.clear();
         }
         else if ((*next)->type == "ArrayIndexAssignStatement")
         {
@@ -524,7 +588,6 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
         }
         else if ((*next)->type == "SystemOutPrintStatement")
         {
-            std::cout << "SOP\n";
             auto child = (*next)->children.begin();
             if ((*child)->type != "MethodCall")
             {
@@ -635,7 +698,6 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
         }
         else if ((*next)->type == "MethodCall")
         {
-            std::cout << "MC\n";
             auto mChild = (*next)->children.begin();
             std::string className;
             method *methodRecord = nullptr;
@@ -767,35 +829,42 @@ std::string symbolTable::getTypeLiteralExpression(std::string literal)
 
 bool symbolTable::testBoolExpression(Node *ptr)
 {
+    bool returnBool = false;
     if (ptr->value == "AndOP" || ptr->value == "OrOP" || ptr->value == "NotOP")
     {
-        std::cout << "1BoolOP\n";
+        std::cout << "Bool1\n";
         if (!isBoolChildren(ptr))
         {
             std::cout << "Error; " << ptr->value << " does not have children of type boolean!\n";
-            return true;
+            returnBool = true;
+        }
+    }
+    else if (ptr->value == "GreaterOP" || ptr->value == "LesserOP")
+    {
+        std::cout << "Bool2\n";
+        if (testType(ptr, "int"))
+        {
+            returnBool = true;
         }
         return false;
+        ;
     }
-    else if (ptr->value == "GreaterOP" || ptr->value == "LesserOP" || ptr->value == "EqualsOP")
+    else if (ptr->value == "EqualsOP")
     {
-        std::cout << "2BoolOP\n";
-        bool returnBool = false;
-        returnBool = testType(ptr, "int");
-        if (ptr->value == "EqualsOp")
+        std::cout << "Bool3\n";
+        if (equalsTestType(ptr))
         {
-            returnBool = testType(ptr, "boolean");
+            returnBool = true;
         }
-        return returnBool;
     }
     for (auto i = ptr->children.begin(); i != ptr->children.end(); i++)
     {
         if (testBoolExpression((*i)))
         {
-            return true;
+            returnBool = true;
         }
     }
-    return false;
+    return returnBool;
 }
 
 bool symbolTable::expressionCheckRecNode(Node *nodePtr)
