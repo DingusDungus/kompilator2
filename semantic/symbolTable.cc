@@ -391,10 +391,15 @@ std::string symbolTable::getType(Node *ptr)
 
 std::vector<std::string> symbolTable::getParams(Node *ptr, std::vector<std::string> params)
 {
-    auto expressionList = ptr->children.begin();
-    for (auto i = (*expressionList)->children.begin(); i != (*expressionList)->children.end(); i++)
+    // if not empty
+    if(ptr->children.empty() == false)
     {
-        params.push_back(getType((*i)));
+        auto expressionList = ptr->children.begin();
+        for (auto i = (*expressionList)->children.begin(); i != (*expressionList)->children.end(); i++)
+        {
+            std::cout << "EXPL type: " << getType((*i)) << std::endl;
+            params.push_back(getType((*i)));
+        }
     }
     return params;
 }
@@ -410,18 +415,24 @@ bool symbolTable::expressionCheck()
 
 bool symbolTable::testMethodCallParams(Node *ptr)
 {
-    auto child = ptr->children.begin();
-    child++;
-    child++;
-    auto expressionList = (*child)->children.begin();
-    for (auto i = (*expressionList)->children.begin(); i != (*expressionList)->children.end(); i++)
-    {
-        if (testType((*i)))
+    if (ptr->children.empty() == false){
+        auto child = ptr->children.begin();
+        child++;
+        child++;
+        if((*child)->children.empty() == false)
         {
-            std::cout << "Error; methodcall parameter expression has differing types!\n";
-            return true;
+            auto expressionList = (*child)->children.begin();
+            for (auto i = (*expressionList)->children.begin(); i != (*expressionList)->children.end(); i++)
+            {
+                if (testType((*i)))
+                {
+                    std::cout << "Error; methodcall parameter expression has differing types!\n";
+                    return true;
+                }
+            }
         }
     }
+    return false;
 }
 
 bool symbolTable::isBoolChildren(Node *ptr)
