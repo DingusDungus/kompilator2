@@ -257,14 +257,18 @@ bool symbolTable::testType(Node *ptr, std::string type)
                           << current->scopeRecord->type
                           << " "
                           << current->scopeRecord->id
-                          << " consists of differing types from " << type << "\n";
+                          << " consists of differing types, got: "
+                          << expressionElements[i]
+                          << ", expected: "
+                          << type
+                          << std::endl;
                 expressionElements.clear();
                 return true;
             }
         }
-        expressionElements.clear();
-        return false;
     }
+    expressionElements.clear();
+    return false;
 }
 bool symbolTable::testType(Node *ptr)
 {
@@ -275,12 +279,12 @@ bool symbolTable::testType(Node *ptr)
     if (expressionElements.size() > 0)
     {
         // debug below
-        // std::cout << "(debug) EXPElements: ";
-        // for (int i = 0; i < expressionElements.size(); i++)
-        // {
-            // std::cout << expressionElements[i] << " ";
-        // }
-        // std::cout << "\n";
+        std::cout << "(debug) EXPElements: ";
+        for (int i = 0; i < expressionElements.size(); i++)
+        {
+            std::cout << expressionElements[i] << " ";
+        }
+        std::cout << "\n";
         // debug above
         std::string type = expressionElements[0];
         for (int i = 0; i < expressionElements.size(); i++)
@@ -291,7 +295,8 @@ bool symbolTable::testType(Node *ptr)
                           << current->scopeRecord->type
                           << " "
                           << current->scopeRecord->id
-                          << " consists of differing types"
+                          << " consists of differing types, got: "
+                          << expressionElements[i]
                           << ", expected: "
                           << type
                           << std::endl;
@@ -299,9 +304,9 @@ bool symbolTable::testType(Node *ptr)
                 return true;
             }
         }
-        expressionElements.clear();
-        return false;
     }
+    expressionElements.clear();
+    return false;
 }
 bool symbolTable::testTypeIdentifier(Node *ptr)
 {
@@ -579,8 +584,8 @@ bool symbolTable::equalsTestType(Node *ptr)
 
 bool symbolTable::isExpression(Node *ptr)
 {
-    if (ptr->type == "AndOP" || ptr->type == "OrOP" || ptr->type == "LesserOP" || ptr->type == "GreaterOP" || ptr->type == "EqualsOP" 
-    || ptr->type == "OrOP" || ptr->type == "AddOP" || ptr->type == "SubOP" || ptr->type == "OrOP" || ptr->type == "MultOP" || ptr->type == "DivOP" 
+    if (ptr->type == "AndOP" || ptr->type == "OrOP" || ptr->type == "LesserOP" || ptr->type == "GreaterOP" || ptr->type == "EqualsOP"
+    || ptr->type == "OrOP" || ptr->type == "AddOP" || ptr->type == "SubOP" || ptr->type == "OrOP" || ptr->type == "MultOP" || ptr->type == "DivOP"
     || ptr->type == "ArrayIndexAccessExpression" || ptr->type == "newIntArray" || ptr->type == "newIdentifier" || ptr->type == "NotOP")
     {
         return true;
@@ -923,7 +928,11 @@ bool symbolTable::expressionCheckRecNode(Node *nodePtr)
         record *identifierVal = lookup(nodePtr->value);
         if (identifierVal != nullptr)
         {
-            if (identifierVal->type != "intArray")
+            if (identifierVal->type == "Class")
+            {
+                expressionElements.push_back(nodePtr->value);
+            }
+            else if (identifierVal->type != "intArray")
             {
                 expressionElements.push_back(identifierVal->type);
             }
