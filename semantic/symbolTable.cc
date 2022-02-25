@@ -950,7 +950,7 @@ bool symbolTable::testBoolExpression(Node *ptr)
 
 bool symbolTable::expressionCheckRecNode(Node *nodePtr)
 {
-    if (nodePtr->type == "Identifier")
+    if (nodePtr->type == "Identifier" && nodePtr->type != "dotlength")
     {
         record *identifierVal = lookup(nodePtr->value);
         if (identifierVal != nullptr)
@@ -971,6 +971,32 @@ bool symbolTable::expressionCheckRecNode(Node *nodePtr)
         else
         {
             std::cout << "Error: variable " << nodePtr->value << " is not declared\n";
+            return true;
+        }
+    }
+    else if (nodePtr->type == "dotlength") {
+        // check children for type of identifier
+        Node* walker = nodePtr;
+        while (walker->children.empty() == false) {
+            walker = (*walker->children.begin());
+        }
+        record* arrayVar = lookup(walker->value);
+        if (arrayVar != nullptr) {
+            if (arrayVar->type == "intArray") {
+                expressionElements.push_back(arrayVar->type);
+                return false;
+            }else {
+                std::cout << "Error; Calling length operator on non array"
+                    << ", got: "
+                    << arrayVar->type
+                    << std::endl;
+                return true;
+            }
+        }else {
+            std::cout << "Error; "
+                << walker->value
+                << " doesnt exists"
+                << std::endl;
             return true;
         }
     }
