@@ -520,7 +520,6 @@ bool symbolTable::isBoolChildren(Node *ptr)
             record *idRecord = lookup(id->value);
             if (idRecord != nullptr && !(idRecord->type == "boolean"))
             {
-                //std::cout << "Error; variable " << id->value << " is not of type boolean!\n";
                 return false;
             }
             else if (idRecord == nullptr)
@@ -616,9 +615,15 @@ bool symbolTable::expressionCheckRec(Node *nodePtr)
         }
         else if ((*next)->type == "IF_ElseStatement" || (*next)->type == "WhileStatement")
         {
+            std::string statementType = (*next)->type;
             if (testBoolExpression((*next)))
             {
-                std::cout << "Error; row: " << (*next)->value <<", boolean expression incorrect\n";
+                std::cout << "Error; row: "
+                    << (*next)->value
+                    << ", boolean expression incorrect"
+                    << " in: "
+                    << statementType
+                    << std::endl;
                 returnBool = true;
             }
             else if (expressionCheckRec((*next)))
@@ -889,9 +894,30 @@ bool symbolTable::testBoolExpression(Node *ptr)
     bool returnBool = false;
     if (ptr->value == "AndOP" || ptr->value == "OrOP" || ptr->value == "NotOP")
     {
-        if (!isBoolChildren(ptr))
+        if (ptr->value == "NotOP" && ptr->parent_node->type == "MethodCall") {
+            auto meth = ptr->parent_node->children.begin();
+            meth++;
+            std::string methodName = (*meth)->value;
+            record* methodRecord = lookup(methodName);
+            std::cout << "methodName: " << methodRecord->id << std::endl;
+            std::cout << "methodReturnType: " << methodRecord->type << std::endl;
+            if (methodRecord->type != "boolean") {
+                std::cout << "Error; "
+                    << ptr->value
+                    << " contains"
+                    << "expression of type "
+                    << methodRecord->type
+                    << " expected type of boolean"
+                    << std::endl;
+                returnBool = true;
+            }
+        }
+        else if (!isBoolChildren(ptr))
         {
-            std::cout << "Error; " << ptr->value << " does not have children of type boolean!\n";
+            std::cout << "Error; "
+                << ptr->value
+                << " does not contain expression of type boolean!"
+                << std::endl;
             returnBool = true;
         }
     }
@@ -901,8 +927,6 @@ bool symbolTable::testBoolExpression(Node *ptr)
         {
             returnBool = true;
         }
-        return false;
-        ;
     }
     else if (ptr->value == "EqualsOP")
     {

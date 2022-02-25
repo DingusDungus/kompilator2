@@ -16,15 +16,23 @@ public:
 	int id;
 	string type, value;
 	int rowNr;
+	Node* parent_node;
 	list<Node*> children;
 	Node(string t, string v) : type(t), value(v) {}
 	Node()
 	{
 		type = "uninitialised";
-		value = "uninitialised"; 
+		value = "uninitialised";
 		rowNr = 0;
 	}   // Bison needs this.
-  
+
+	void generate_parents(int depth=0, Node* parent=nullptr) {
+		for(auto i=children.begin(); i!=children.end(); i++){
+			(*i)->parent_node = parent;
+			(*i)->generate_parents(depth+1, (*i));
+		}
+	}
+
 	void print_tree(int depth=0) {
 		for(int i=0; i<depth; i++)
 		cout << "  ";
@@ -32,7 +40,7 @@ public:
 		for(auto i=children.begin(); i!=children.end(); i++)
 		(*i)->print_tree(depth+1);
 	}
-  
+
 	void generate_tree() {
 		std::ofstream outStream;
 	  	outStream.open("tree.dot");

@@ -29,6 +29,7 @@ int main(int argc, char **argv)
   if (!parser.parse())
   {
     root->generate_tree();
+    root->generate_parents(0, root);
   }
   ST.init(root);
   ST.printSTtree();
