@@ -242,11 +242,14 @@ bool symbolTable::testType(Node *ptr, std::string type)
     {
         return true;
     }
-    // for (int i = 0; i < expressionElements.size(); i++)
-    // {
-        // std::cout << expressionElements[i] << " ";
-    // }
-    // std::cout << "\n";
+        // debug below
+        std::cout << "(debug) EXPElements: ";
+        for (int i = 0; i < expressionElements.size(); i++)
+        {
+            std::cout << expressionElements[i] << " ";
+        }
+        std::cout << "\n";
+        // debug above
     if (expressionElements.size() > 0)
     {
         for (int i = 0; i < expressionElements.size(); i++)
