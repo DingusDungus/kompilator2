@@ -4,6 +4,7 @@
 #include "Node.h"
 }
 %option noyywrap nounput batch noinput stack
+%option yylineno
 %%
 
 "+"                             { return yy::parser::make_PLUSOP(yytext);}

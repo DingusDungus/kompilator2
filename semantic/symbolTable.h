@@ -40,6 +40,7 @@ private:
     bool equalsTestType(Node *ptr);
     bool testBoolEquals(Node *ptr);
     bool varIsBool(Node *ptr);
+    bool isExpression(Node *ptr);
 
 public:
     symbolTable();

@@ -11,6 +11,8 @@
 %code{
   #define YY_DECL yy::parser::symbol_type yylex()
 
+  extern int yylineno;
+
   YY_DECL;
 
   Node* root;
@@ -271,36 +273,36 @@ statementList:  statement
 
 statement:  LBRACE statements RBRACE
             {
-              $$ = new Node("Statement", "");
+              $$ = new Node("Statement", std::to_string(yylineno));
               $$->children.push_back($2);
             };|
             IF  LP  expression RP statement ELSE statement
             {
-              $$ = new Node("IF_ElseStatement", "");
+              $$ = new Node("IF_ElseStatement", std::to_string(yylineno));
               $$->children.push_back($3);
               $$->children.push_back($5);
               $$->children.push_back($7);
             };|
             WHILE LP  expression RP statement
             {
-              $$ = new Node("WhileStatement", "");
+              $$ = new Node("WhileStatement", std::to_string(yylineno));
               $$->children.push_back($3);
               $$->children.push_back($5);
             };|
             SOP LP  expression  RP  SEMI_C
             {
-              $$ = new Node("SystemOutPrintStatement", "");
+              $$ = new Node("SystemOutPrintStatement", std::to_string(yylineno));
               $$->children.push_back($3);
             };|
             identifier  ASSIGN  expression SEMI_C
             {
-              $$ = new Node("AssignStatement", "");
+              $$ = new Node("AssignStatement", std::to_string(yylineno));
               $$->children.push_back($1);
               $$->children.push_back($3);
             };|
             identifier LBRACKET expression RBRACKET ASSIGN expression SEMI_C
             {
-              $$ = new Node("ArrayIndexAssignStatement", "");
+              $$ = new Node("ArrayIndexAssignStatement", std::to_string(yylineno));
               $$->children.push_back($1);
               $$->children.push_back($3);
               $$->children.push_back($6);
@@ -308,72 +310,72 @@ statement:  LBRACE statements RBRACE
 
 expression: expression AND expression
             {
-              $$ = new Node("Expression", "AndOP");
+              $$ = new Node("AndOP", std::to_string(yylineno));
               $$->children.push_back($1);
               $$->children.push_back($3);
             };|
             expression OR expression
             {
-              $$ = new Node("Expression", "OrOP");
+              $$ = new Node("OrOP", std::to_string(yylineno));
               $$->children.push_back($1);
               $$->children.push_back($3);
             };|
             expression LESSER expression
             {
-              $$ = new Node("Expression", "LesserOP");
+              $$ = new Node("LesserOP", std::to_string(yylineno));
               $$->children.push_back($1);
               $$->children.push_back($3);
             };|
             expression GREATER expression
             {
-              $$ = new Node("Expression", "GreaterOP");
+              $$ = new Node("GreaterOP", std::to_string(yylineno));
               $$->children.push_back($1);
               $$->children.push_back($3);
             };|
             expression EQUAL expression
             {
-              $$ = new Node("Expression", "EqualsOP");
+              $$ = new Node("EqualsOP", std::to_string(yylineno));
               $$->children.push_back($1);
               $$->children.push_back($3);
             };|
             expression PLUSOP expression
             {
-              $$ = new Node("Expression", "AddOP");
+              $$ = new Node("AddOP", std::to_string(yylineno));
               $$->children.push_back($1);
               $$->children.push_back($3);
             };|
             expression MINUS expression
             {
-              $$ = new Node("Expression", "SubOP");
+              $$ = new Node("SubOP", std::to_string(yylineno));
               $$->children.push_back($1);
               $$->children.push_back($3);
             };|
             expression MULTOP expression
             {
-              $$ = new Node("Expression", "Multop");
+              $$ = new Node("MultOP", std::to_string(yylineno));
               $$->children.push_back($1);
               $$->children.push_back($3);
             };|
             expression DIVOP expression
             {
-              $$ = new Node("Expression", "DivOP");
+              $$ = new Node("DivOP", std::to_string(yylineno));
               $$->children.push_back($1);
               $$->children.push_back($3);
             };|
             expression LBRACKET expression RBRACKET
             {
-              $$ = new Node("Expression", "ArrayIndexAccessExpression");
+              $$ = new Node("ArrayIndexAccessExpression", std::to_string(yylineno));
               $$->children.push_back($1);
               $$->children.push_back($3);
             };|
             expression DOT LENGTH
             {
-              $$ = new Node("Expression", "dotlength");
+              $$ = new Node("dotlength", std::to_string(yylineno));
               $$->children.push_back($1);
             };|
             expression DOT identifier LP expressions RP
             {
-              $$ = new Node("MethodCall", "");
+              $$ = new Node("MethodCall", std::to_string(yylineno));
               $$->children.push_back($1);
               $$->children.push_back($3);
               $$->children.push_back($5);
@@ -392,7 +394,7 @@ expression: expression AND expression
             };|
             identifier
             {
-              $$ = new Node("IdentifierExpression", "");
+              $$ = new Node("IdentifierExpression", std::to_string(yylineno));
               $$->children.push_back($1);
             };|
             THIS
@@ -401,22 +403,22 @@ expression: expression AND expression
             }; |
             NEW INT LBRACKET expression RBRACKET
             {
-              $$ = new Node("Expression", "newIntArray");
+              $$ = new Node("newIntArray", std::to_string(yylineno));
               $$->children.push_back($4);
             };|
             NEW identifier LP RP
             {
-              $$ = new Node("Expression", "newIdentifier");
+              $$ = new Node("newIdentifier", std::to_string(yylineno));
               $$->children.push_back($2);
             };|
             NOT expression
             {
-              $$ = new Node("Expression", "NotOP");
+              $$ = new Node("NotOP", "NotOP");
               $$->children.push_back($2);
             };|
             LP expression RP
             {
-              $$ = new Node("Expression", "");
+              $$ = new Node("Expression", std::to_string(yylineno));
               $$->children.push_back($2);
             };
 

@@ -15,12 +15,15 @@ class Node {
 public:
 	int id;
 	string type, value;
+	int rowNr;
 	list<Node*> children;
 	Node(string t, string v) : type(t), value(v) {}
 	Node()
 	{
 		type = "uninitialised";
-		value = "uninitialised"; }   // Bison needs this.
+		value = "uninitialised"; 
+		rowNr = 0;
+	}   // Bison needs this.
   
 	void print_tree(int depth=0) {
 		for(int i=0; i<depth; i++)
